@@ -1,7 +1,6 @@
 import 'dart:html' as html;
 import 'dart:typed_data';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mime/mime.dart';
@@ -12,7 +11,8 @@ class Uploader {
   static Future uploadFile(
       dynamic file,
       FileDropzoneController dropzoneController,
-      Function onSuccess
+      void Function(Reference) onSuccess,
+      {String filename = ''}
       ) async {
     String? mimeType;
     if(file is html.File) {
@@ -35,9 +35,8 @@ class Uploader {
     final storageRef = FirebaseStorage.instance.ref();
     String extension = file.name.substring(file.name.lastIndexOf('.'));
 
-    final imageRef = storageRef.child(file.name.replaceFirst(
-        extension, '${Timestamp.now().millisecondsSinceEpoch}.$extension')
-    );
+    final fileRef = storageRef.child('${filename.isNotEmpty ? filename : file
+        .name.toString().replaceFirst(extension, '')}$extension');
 
     Uint8List? imageData;
     if(file is html.File) {
@@ -52,7 +51,7 @@ class Uploader {
     }
 
 
-    imageRef.putData(imageData!, SettableMetadata(contentType: mimeType))
+    fileRef.putData(imageData!, SettableMetadata(contentType: mimeType))
         .snapshotEvents.listen((taskSnapshot) {
       switch(taskSnapshot.state) {
         case TaskState.running:
@@ -63,7 +62,7 @@ class Uploader {
           dropzoneController.progress = 100;
           Future.delayed(const Duration(seconds: 1), () async {
             dropzoneController.uploadStatus = 'success';
-            onSuccess(await taskSnapshot.ref.getDownloadURL());
+            onSuccess(taskSnapshot.ref);
           });
 
           break;

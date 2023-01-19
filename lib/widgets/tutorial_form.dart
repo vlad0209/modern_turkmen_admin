@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:modern_turkmen_admin/helpers/uploader.dart';
 import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
@@ -41,7 +42,9 @@ class _TutorialFormState extends State<TutorialForm> {
   bool publicEn = false;
   bool publicRu = false;
   String image = '';
+  String thumb = '';
   final FileDropzoneController _dropzoneImageController = FileDropzoneController();
+  late String tutorialId;
 
 
   @override
@@ -53,8 +56,11 @@ class _TutorialFormState extends State<TutorialForm> {
       publicEn = widget.data!['public_en']?? false;
       publicRu = widget.data!['public_ru']?? false;
       image = widget.data!['image']?? '';
+      thumb = widget.data!['thumb']?? '';
+      tutorialId = widget.id!;
+    } else {
+      tutorialId = FirebaseFirestore.instance.collection('tutorials').doc().id;
     }
-    print(widget.data);
     super.initState();
   }
 
@@ -235,21 +241,16 @@ class _TutorialFormState extends State<TutorialForm> {
       };
 
       try {
-        String? tutorialId;
         if (widget.action == 'create') {
           data['created_at'] = Timestamp.now();
-          final tutorial = await FirebaseFirestore.instance.collection('tutorials')
+          await FirebaseFirestore.instance.collection('tutorials')
               .add(data);
-          tutorialId = tutorial.id;
         } else if (widget.action == 'update') {
           await FirebaseFirestore.instance.collection('tutorials').doc(
-              widget.id
+              tutorialId
           ).update(data);
-          tutorialId = widget.id;
         }
-        if(tutorialId != null) {
-          widget.onSuccess(tutorialId);
-        }
+        widget.onSuccess(tutorialId);
 
 
       } on Exception catch (exception) {
@@ -267,11 +268,18 @@ class _TutorialFormState extends State<TutorialForm> {
     Uploader.uploadFile(
         file,
         _dropzoneImageController,
-        (imageUrl) {
+        (ref) async {
+            String imageUrl = await ref.getDownloadURL();
+            final storageRef = FirebaseStorage.instance.ref();
+            final thumbRef = storageRef.child('thumb_${ref.name}');
+
             setState(() {
               image = imageUrl;
+              //thumb = thumbUrl;
             });
-        }
+
+        },
+        filename: 'tutorial_image_$tutorialId'
     );
   }
 

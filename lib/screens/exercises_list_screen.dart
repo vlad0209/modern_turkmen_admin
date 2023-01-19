@@ -3,7 +3,6 @@ import 'package:modern_turkmen_admin/constants.dart';
 import 'package:modern_turkmen_admin/screens/add_exercise_screen.dart';
 import 'package:modern_turkmen_admin/screens/edit_exercise_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:vrouter/vrouter.dart';
 
@@ -96,7 +95,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
                                   .replaceFirst(':tutorial_id', tutorialId)
                                   .replaceFirst(':lang', languageCode)
                                   .replaceFirst(':exercise_id', document.id)),
-                          child: Text(data['title_en']),
+                          child: Text(data['description']),
                         ),
                         trailing: IconButton(
                           onPressed: () => deleteExercise(document.id),
@@ -118,7 +117,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
           context.vRouter.to(AddExerciseScreen.routePath.replaceFirst(
               ':tutorial_id',
               tutorialId
-          ));
+          ).replaceFirst(':lang', languageCode));
         },
         child: const Icon(Icons.add),
       ),

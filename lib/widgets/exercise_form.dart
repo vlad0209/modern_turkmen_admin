@@ -30,11 +30,12 @@ class ExerciseForm extends StatefulWidget {
 class _ExerciseFormState extends State<ExerciseForm> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _exampleController = TextEditingController();
+  final TextEditingController _exampleTranslationController =
+  TextEditingController();
 
   String requestStatus = 'idle';
   final _formKey = GlobalKey<FormState>();
-  DateTime? updatedAt;
-  List<ExerciseItem> items = [];
+  List items = [];
 
 
   @override
@@ -42,7 +43,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
     if (widget.data != null) {
       _descriptionController.text = widget.data!['description'];
       _exampleController.text = widget.data!['example'];
-      updatedAt =  widget.data!['updated_at'].toDate();
+      _exampleTranslationController.text = widget.data!['example_translation']?? '';
       int itemIndex = 0;
       items = widget.data!['items'].map((item) {
         itemIndex++;
@@ -107,10 +108,28 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       margin: const EdgeInsets.only(top: 11),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                            labelText: 'Example',
+                            labelText: 'Example (use <f></f> tag to add word tags)',
                             border: OutlineInputBorder()
                         ),
                         controller: _exampleController,
+                        minLines: 8,
+                        maxLines: 11,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 11),
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                            labelText: 'Example translation',
+                            border: OutlineInputBorder()
+                        ),
+                        controller: _exampleTranslationController,
                         minLines: 8,
                         maxLines: 11,
                         validator: (value) {
@@ -130,7 +149,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                     Column(
                       children: [
                         Column(
-                          children: items,
+                          children: items.cast(),
                         ),
                         const SizedBox(
                           height: 9,
@@ -141,12 +160,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
                         ),
                       ],
                     ),
-                    if(updatedAt != null)
-                      Container(margin: const EdgeInsets.only(top: 11), child: Text(
-                          'Updated at: ${DateFormat('yyyy-MM-dd – kk:mm').format(
-                              updatedAt!
-                          )}')
-                      ),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: ElevatedButton(
@@ -220,7 +233,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
       setState(() {
         requestStatus = 'idle';
-        updatedAt = data['updated_at'].toDate();
       });
     }
   }

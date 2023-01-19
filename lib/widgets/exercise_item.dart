@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:modern_turkmen_admin/controllers/file_dropzone_controller.dart';
 import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
@@ -42,6 +43,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
   PlayerState? playerState;
   bool loadingAudio = false;
   Future? soundFuture;
+  late String documentId;
 
   @override
   void initState() {
@@ -160,7 +162,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
   }
 
   void uploadSound(file) {
-    Uploader.uploadFile(file, _soundController, (url) {
+    Uploader.uploadFile(file, _soundController, (ref) async {
+      String url = await ref.getDownloadURL();
+
       soundFuture = player.setSourceUrl(url);
       setState(() {
         soundUrl = url;
