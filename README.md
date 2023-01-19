@@ -2,13 +2,41 @@
 
 Content management system for [Modern Turkmen app](https://github.com/vlad0209/modern_turkmen)
 
+## Requirements
+
+This tool requires [Flutter](https://docs.flutter.dev/get-started/install), [Firebase CLI](https://firebase.google.com/docs/cli?authuser=0&hl=en#install_the_firebase_cli), [FlutterFire CLI](https://firebase.google.com/docs/flutter/setup), [Nodejs and npm](https://nodejs.org/)
+
 ## Getting Started
 
-A few resources to get you started if this is your first Flutter project:
+Clone the repository:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+$ git clone https://github.com/vlad0209/modern_turkmen_admin.git
+$ cd modern_turkmen_admin
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Install dependencies:
+
+```bash
+$ flutter pub get
+$ cd functions
+$ npm install
+$ cd ..
+```
+
+Run the FlutterFire CLI:
+
+```bash
+$ flutterfire configure
+```
+
+Select the same Firebase project you use for the modern_turkmen app.
+
+Deploy the project to Firebase:
+
+```bash
+$ firebase deploy
+```
+
+In the [Firebase Console](https://console.firebase.google.com/) 
+
