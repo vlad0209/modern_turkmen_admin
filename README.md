@@ -32,6 +32,20 @@ $ flutterfire configure
 
 Select the same Firebase project you use for the modern_turkmen app.
 
+Build the app for Web:
+
+```bash
+$ flutter build web --web-renderer html
+```
+
+Init Firebase hosting:
+
+```bash
+$ firebase init hosting
+```
+
+
+
 Deploy the project to Firebase:
 
 ```bash
