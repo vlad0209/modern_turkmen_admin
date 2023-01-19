@@ -44,8 +44,6 @@ Init Firebase hosting:
 $ firebase init hosting
 ```
 
-
-
 Deploy the project to Firebase:
 
 ```bash
