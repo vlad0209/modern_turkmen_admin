@@ -38,11 +38,20 @@ Build the app for Web:
 $ flutter build web --web-renderer html
 ```
 
+In the [Firebase Console](https://console.firebase.google.com/) in Authentication 
+set-up Email/Password sign-in provider. Add user. This user will be admin user. Copy UID of the user. Create Firestore database.
+Create `users` collection. Add its first document with the ID equal to the copied user UID.
+In this document add field `admin` with type `boolean` and value `true`. Set up Cloud Storage.
+
 Init Firebase hosting:
 
 ```bash
+$ firebase use --clear
 $ firebase init hosting
 ```
+
+When it asks you about your public directory enter `build/web`. When it requests overwriting 
+index.html choose `No`.
 
 Deploy the project to Firebase:
 
@@ -50,5 +59,5 @@ Deploy the project to Firebase:
 $ firebase deploy
 ```
 
-In the [Firebase Console](https://console.firebase.google.com/) 
+
 

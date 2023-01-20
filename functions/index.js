@@ -47,6 +47,8 @@ exports.generateThumbnail = functions.storage.object()
       const thumbFileName = `thumb_${fileName}`;
       const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
 
+      console.log("bucket:");
+      console.log(bucket);
       // Uploading the thumbnail.
       await bucket.upload(
           tempFilePath,
