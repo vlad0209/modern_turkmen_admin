@@ -59,5 +59,6 @@ Deploy the project to Firebase:
 $ firebase deploy
 ```
 
-
+After deploying it will show you hosting URL. Open this URL in your web browser and log in with the
+credentials of the admin user you created.
 

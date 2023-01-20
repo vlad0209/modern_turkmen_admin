@@ -47,8 +47,6 @@ exports.generateThumbnail = functions.storage.object()
       const thumbFileName = `thumb_${fileName}`;
       const thumbFilePath = path.join(path.dirname(filePath), thumbFileName);
 
-      console.log("bucket:");
-      console.log(bucket);
       // Uploading the thumbnail.
       await bucket.upload(
           tempFilePath,
@@ -61,7 +59,7 @@ exports.generateThumbnail = functions.storage.object()
             "tutorial_image_",
             "",
         );
-        const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/modern-turkmen.appspot.com/o/${thumbFileName}?alt=media&token=${uuid}`;
+        const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${thumbFileName}?alt=media&token=${uuid}`;
         await admin.firestore().collection("tutorials").doc(tutorialId).update({
           "thumb_url": downloadUrl,
         });
