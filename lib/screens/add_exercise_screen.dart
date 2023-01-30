@@ -88,7 +88,10 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
           context.vRouter.to(EditExerciseScreen.routePath.replaceFirst(
               ':tutorial_id',
               tutorialId
-          ).replaceFirst(':exercise_id', exerciseId));
+          ).replaceFirst(':exercise_id', exerciseId).replaceFirst(
+              ':lang',
+              language!
+          ));
         },
         onFail: () {
           ScaffoldMessenger.of(context).showSnackBar(
