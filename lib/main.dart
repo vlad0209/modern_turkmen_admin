@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           brightness: Brightness.light,
           textTheme: const TextTheme(
-            bodyText2: TextStyle(fontSize: 14.0),
+            bodyMedium: TextStyle(fontSize: 14.0),
           )),
       debugShowCheckedModeBanner: false,
       mode: VRouterMode.history,
