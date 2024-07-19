@@ -1,4 +1,4 @@
-import 'package:universal_html/html.dart' as html;
+import 'dart:html' as html;
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';

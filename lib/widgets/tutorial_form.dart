@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:modern_turkmen_admin/helpers/uploader.dart';
@@ -20,7 +19,7 @@ class TutorialForm extends StatefulWidget {
       required this.action,
       required this.onSuccess,
       required this.onFail,
-        this.id,
+      this.id,
       this.data});
 
   @override
@@ -28,7 +27,6 @@ class TutorialForm extends StatefulWidget {
 }
 
 class _TutorialFormState extends State<TutorialForm> {
-
   final TextEditingController _englishNameController = TextEditingController();
   final TextEditingController _russianNameController = TextEditingController();
   final HtmlEditorController _englishContentController = HtmlEditorController();
@@ -41,20 +39,20 @@ class _TutorialFormState extends State<TutorialForm> {
   bool publicRu = false;
   String image = '';
   String thumb = '';
-  final FileDropzoneController _dropzoneImageController = FileDropzoneController();
+  final FileDropzoneController _dropzoneImageController =
+      FileDropzoneController();
   late String tutorialId;
-
 
   @override
   void initState() {
     if (widget.data != null) {
-      _englishNameController.text = widget.data!['title_en']?? '';
-      _russianNameController.text = widget.data!['title_ru']?? '';
-      updatedAt =  widget.data!['updated_at']?.toDate();
-      publicEn = widget.data!['public_en']?? false;
-      publicRu = widget.data!['public_ru']?? false;
-      image = widget.data!['image']?? '';
-      thumb = widget.data!['thumb']?? '';
+      _englishNameController.text = widget.data!['title_en'] ?? '';
+      _russianNameController.text = widget.data!['title_ru'] ?? '';
+      updatedAt = widget.data!['updated_at']?.toDate();
+      publicEn = widget.data!['public_en'] ?? false;
+      publicRu = widget.data!['public_ru'] ?? false;
+      image = widget.data!['image'] ?? '';
+      thumb = widget.data!['thumb'] ?? '';
       tutorialId = widget.id!;
     } else {
       tutorialId = FirebaseFirestore.instance.collection('tutorials').doc().id;
@@ -81,7 +79,8 @@ class _TutorialFormState extends State<TutorialForm> {
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: TextFormField(
-                        decoration: const InputDecoration(labelText: 'English Name'),
+                        decoration:
+                            const InputDecoration(labelText: 'English Name'),
                         controller: _englishNameController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -94,34 +93,36 @@ class _TutorialFormState extends State<TutorialForm> {
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: TextFormField(
-                        decoration: const InputDecoration(
-                            labelText: 'Russian Name'
-                        ),
+                        decoration:
+                            const InputDecoration(labelText: 'Russian Name'),
                         controller: _russianNameController,
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: Row(
-                        children: [
-                          const Text('English content:'),
-                          IconButton(onPressed: () {
-                            _englishContentController.toggleCodeView();
-                          }, icon: const Icon(Icons.code))
-                        ],
-                      )
-                    ),
+                        margin: const EdgeInsets.only(top: 11),
+                        child: Row(
+                          children: [
+                            const Text('English content:'),
+                            IconButton(
+                                onPressed: () {
+                                  _englishContentController.toggleCodeView();
+                                },
+                                icon: const Icon(Icons.code))
+                          ],
+                        )),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: HtmlEditor(
                         htmlEditorOptions: HtmlEditorOptions(
-                            hint: 'Enter English Content',
-                            initialText: widget.data != null ? widget.data!['content_en'] : ''
+                          hint: 'Enter English Content',
+                          initialText: widget.data != null
+                              ? widget.data!['content_en']
+                              : '',
                         ),
-                        controller: _englishContentController,
                         otherOptions: const OtherOptions(
                           height: 400,
                         ),
+                        controller: _englishContentController,
                       ),
                     ),
                     Container(
@@ -129,50 +130,61 @@ class _TutorialFormState extends State<TutorialForm> {
                         child: Row(
                           children: [
                             const Text('Russian content:'),
-                            IconButton(onPressed: () {
-                              _russianContentController.toggleCodeView();
-                            }, icon: const Icon(Icons.code))
+                            IconButton(
+                                onPressed: () {
+                                  _russianContentController.toggleCodeView();
+                                },
+                                icon: const Icon(Icons.code))
                           ],
-                        )
-                    ),
+                        )),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: HtmlEditor(
                         htmlEditorOptions: HtmlEditorOptions(
-                            hint: 'Enter Russian Content',
-                            initialText: widget.data != null ? widget.data!['content_ru'] : ''
+                          hint: 'Enter Russian Content',
+                          initialText: widget.data != null
+                              ? widget.data!['content_ru']
+                              : '',
                         ),
-                        controller: _russianContentController,
                         otherOptions: const OtherOptions(
                           height: 400,
                         ),
+                        controller: _russianContentController,
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: image.isEmpty ? FileDropzone(
-                        label: 'Upload image of the tutorial',
-                        onDrop: (files) => uploadImage(files.first),
-                        controller: _dropzoneImageController,
-                      ) : Column(children: [
-                        Image.network(image),
-                        TextButton(onPressed: () {
-                          setState(() {
-                            image = '';
-                            _dropzoneImageController.reset();
-                          });
-                        }, child: const Text('Replace the image'))
-                      ],)
-                    ),
+                        margin: const EdgeInsets.only(top: 11),
+                        child: image.isEmpty
+                            ? FileDropzone(
+                                label: 'Upload image of the tutorial',
+                                onDrop: (files) => uploadImage(files.first),
+                                controller: _dropzoneImageController,
+                              )
+                            : Column(
+                                children: [
+                                  Image.network(image),
+                                  TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          image = '';
+                                          _dropzoneImageController.reset();
+                                        });
+                                      },
+                                      child: const Text('Replace the image'))
+                                ],
+                              )),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: Row(
                         children: [
-                          Checkbox(value: publicEn, onChanged: (bool? value) {
-                            setState(() {
-                              publicEn = value!;
-                            });
-                          },),
+                          Checkbox(
+                            value: publicEn,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                publicEn = value!;
+                              });
+                            },
+                          ),
                           const Text('Public in English')
                         ],
                       ),
@@ -181,21 +193,23 @@ class _TutorialFormState extends State<TutorialForm> {
                       margin: const EdgeInsets.only(top: 11),
                       child: Row(
                         children: [
-                          Checkbox(value: publicRu, onChanged: (bool? value) {
-                            setState(() {
-                              publicRu = value!;
-                            });
-                          },),
+                          Checkbox(
+                            value: publicRu,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                publicRu = value!;
+                              });
+                            },
+                          ),
                           const Text('Public in Russian')
                         ],
                       ),
                     ),
-                    if(updatedAt != null)
-                      Container(margin: const EdgeInsets.only(top: 11), child: Text(
-                          'Updated at: ${DateFormat('yyyy-MM-dd – kk:mm').format(
-                              updatedAt!
-                          )}')
-                      ),
+                    if (updatedAt != null)
+                      Container(
+                          margin: const EdgeInsets.only(top: 11),
+                          child: Text(
+                              'Updated at: ${DateFormat('yyyy-MM-dd – kk:mm').format(updatedAt!)}')),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: ElevatedButton(
@@ -215,8 +229,6 @@ class _TutorialFormState extends State<TutorialForm> {
       ),
     );
   }
-
-
 
   void submitForm() async {
     if (requestStatus == 'pending') {
@@ -241,16 +253,14 @@ class _TutorialFormState extends State<TutorialForm> {
       try {
         if (widget.action == 'create') {
           data['created_at'] = Timestamp.now();
-          await FirebaseFirestore.instance.collection('tutorials')
-              .add(data);
+          await FirebaseFirestore.instance.collection('tutorials').add(data);
         } else if (widget.action == 'update') {
-          await FirebaseFirestore.instance.collection('tutorials').doc(
-              tutorialId
-          ).update(data);
+          await FirebaseFirestore.instance
+              .collection('tutorials')
+              .doc(tutorialId)
+              .update(data);
         }
         widget.onSuccess(tutorialId);
-
-
       } on Exception catch (exception) {
         widget.onFail(exception);
       }
@@ -263,19 +273,12 @@ class _TutorialFormState extends State<TutorialForm> {
   }
 
   void uploadImage(file) {
-    Uploader.uploadFile(
-        file,
-        _dropzoneImageController,
-        (ref) async {
-            String imageUrl = await ref.getDownloadURL();
+    Uploader.uploadFile(file, _dropzoneImageController, (ref) async {
+      String imageUrl = await ref.getDownloadURL();
 
-            setState(() {
-              image = imageUrl;
-            });
-
-        },
-        filename: 'tutorial_image_$tutorialId'
-    );
+      setState(() {
+        image = imageUrl;
+      });
+    }, filename: 'tutorial_image_$tutorialId');
   }
-
 }
