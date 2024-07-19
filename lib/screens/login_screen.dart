@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   static String routePath = '/login';
 
   @override
@@ -46,8 +46,8 @@ class LoginScreenState extends State<LoginScreen> {
         }
       }
 
-      if(authorized) {
-        context.vRouter.to(TutorialsListScreen.routePath);
+      if(authorized && mounted) {
+        context.push(TutorialsListScreen.routePath);
       } else {
         setState(() {
           _errorMessage = "You don't have admin permissions";

@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
 import 'package:modern_turkmen_admin/screens/edit_exercise_screen.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
 import 'package:modern_turkmen_admin/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 class AddExerciseScreen extends StatefulWidget {
-  const AddExerciseScreen({Key? key}) : super(key: key);
+  const AddExerciseScreen({super.key, required this.tutorialId, required this.language});
   static String routePath = '/tutorials/:tutorial_id/:lang/add-exercise/';
+  final String tutorialId;
+  final String language;
 
   @override
   State<AddExerciseScreen> createState() => _AddExerciseScreenState();
@@ -19,16 +21,13 @@ class AddExerciseScreen extends StatefulWidget {
 
 class _AddExerciseScreenState extends State<AddExerciseScreen> {
   String tutorialName = '';
-  String? tutorialId;
-  String? language;
+  
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      String? tutorialId = context.vRouter.pathParameters['tutorial_id'];
-
       FirebaseFirestore.instance.collection('tutorials')
-          .doc(tutorialId).get().then((tutorial) {
+          .doc(widget.tutorialId).get().then((tutorial) {
         setState(() {
           tutorialName = tutorial['title_en'];
         });
@@ -40,8 +39,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    tutorialId ??= context.vRouter.pathParameters['tutorial_id'];
-    language ??= context.vRouter.pathParameters['lang'];
 
     return MainLayout(
       title: Row(
@@ -50,7 +47,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.vRouter.to(TutorialsListScreen.routePath);
+                  context.push(TutorialsListScreen.routePath);
                 },
                 child: const Text(
                   'Tutorials',
@@ -61,14 +58,14 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.vRouter.to(ExercisesListScreen.routePath.replaceFirst(
+                  context.push(ExercisesListScreen.routePath.replaceFirst(
                       ':tutorial_id',
-                      tutorialId!
-                  ).replaceFirst(':lang', language!));
+                      widget.tutorialId
+                  ).replaceFirst(':lang', widget.language));
                 },
                 child: Text(
                   ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' :
-                  ''} (${kLanguages[language]})',
+                  ''} (${kLanguages[widget.language]})',
                   style: const TextStyle(color: Colors.white),
                 )),
           ),
@@ -76,7 +73,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
         ],
       ),
       body: ExerciseForm(
-        tutorialId: tutorialId!,
+        tutorialId: widget.tutorialId,
         action: 'create',
         onSuccess: (tutorialId, exerciseId) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -85,19 +82,19 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 backgroundColor: Colors.lightGreen,
               )
           );
-          context.vRouter.to(EditExerciseScreen.routePath.replaceFirst(
+          context.push(EditExerciseScreen.routePath.replaceFirst(
               ':tutorial_id',
               tutorialId
           ).replaceFirst(':exercise_id', exerciseId).replaceFirst(
               ':lang',
-              language!
+              widget.language
           ));
         },
         onFail: () {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Failed to create an exercise'))
           );
-        }, languageCode: language!,
+        }, languageCode: widget.language,
       ),
     );
   }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:modern_turkmen_admin/widgets/exercise_item.dart';
 
 class ExerciseForm extends StatefulWidget {
@@ -13,15 +12,14 @@ class ExerciseForm extends StatefulWidget {
   final Map? data;
 
   const ExerciseForm(
-      {Key? key,
+      {super.key,
       required this.action,
       required this.onSuccess,
       required this.onFail,
         required this.tutorialId,
         required this.languageCode,
         this.id,
-      this.data})
-      : super(key: key);
+      this.data});
 
   @override
   State<ExerciseForm> createState() => _ExerciseFormState();

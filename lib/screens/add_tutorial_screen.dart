@@ -1,13 +1,13 @@
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/screens/edit_tutorial_screen.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:modern_turkmen_admin/widgets/tutorial_form.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 class AddTutorialScreen extends StatelessWidget {
-  const AddTutorialScreen({Key? key}) : super(key: key);
+  const AddTutorialScreen({super.key});
   static String routePath = '/tutorials/add-tutorial';
 
   @override
@@ -19,7 +19,7 @@ class AddTutorialScreen extends StatelessWidget {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.vRouter.to(TutorialsListScreen.routePath);
+                  context.push(TutorialsListScreen.routePath);
                 },
                 child: const Text(
                   'Tutorials',
@@ -38,7 +38,7 @@ class AddTutorialScreen extends StatelessWidget {
                 backgroundColor: Colors.lightGreen,
               )
           );
-          context.vRouter.to(EditTutorialScreen.routePath.replaceFirst(':id', id));
+          context.push(EditTutorialScreen.routePath.replaceFirst(':id', id));
         },
         onFail: () {
           ScaffoldMessenger.of(context).showSnackBar(

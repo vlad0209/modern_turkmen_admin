@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:modern_turkmen_admin/widgets/tutorial_form.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 
 class EditTutorialScreen extends StatefulWidget {
-  const EditTutorialScreen({Key? key}) : super(key: key);
+  const EditTutorialScreen({super.key, required this.tutorialId});
   static String routePath = '/tutorials/edit-tutorial/:id';
+  final String tutorialId;
 
   @override
   State<EditTutorialScreen> createState() => _EditTutorialScreenState();
@@ -18,10 +19,9 @@ class EditTutorialScreen extends StatefulWidget {
 class _EditTutorialScreenState extends State<EditTutorialScreen> {
   @override
   Widget build(BuildContext context) {
-    final String? tutorialId = context.vRouter.pathParameters['id'];
     final DocumentReference tutorialRef = FirebaseFirestore.instance.collection(
         'tutorials'
-    ).doc(tutorialId);
+    ).doc(widget.tutorialId);
 
     return MainLayout(
         title: Row(
@@ -30,7 +30,7 @@ class _EditTutorialScreenState extends State<EditTutorialScreen> {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.vRouter.to(TutorialsListScreen.routePath);
+                    context.push(TutorialsListScreen.routePath);
                   },
                   child: const Text(
                     'Tutorials',

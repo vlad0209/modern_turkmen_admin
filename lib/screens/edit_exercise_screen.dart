@@ -1,19 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
-import 'package:modern_turkmen_admin/widgets/tutorial_form.dart';
 import 'package:modern_turkmen_admin/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 
 class EditExerciseScreen extends StatefulWidget {
-  const EditExerciseScreen({Key? key}) : super(key: key);
+  const EditExerciseScreen({super.key, required this.tutorialId, required this.exerciseId, required this.lang});
   static String routePath = '/tutorials/:tutorial_id/:lang/edit-exercise/:exercise_id';
-
+  final String tutorialId;
+  final String exerciseId;
+  final String lang;
   @override
   State<EditExerciseScreen> createState() => _EditExerciseScreenState();
 }
@@ -24,10 +25,8 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      String? tutorialId = context.vRouter.pathParameters['tutorial_id'];
-
       FirebaseFirestore.instance.collection('tutorials')
-          .doc(tutorialId).get().then((tutorial) {
+          .doc(widget.tutorialId).get().then((tutorial) {
         setState(() {
           tutorialName = tutorial['title_en'];
         });
@@ -39,12 +38,9 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String? exerciseId = context.vRouter.pathParameters['exercise_id'];
-    String? tutorialId = context.vRouter.pathParameters['tutorial_id'];
-    String? lang = context.vRouter.pathParameters['lang'];
     final DocumentReference exerciseRef = FirebaseFirestore.instance.collection(
-        'tutorials/$tutorialId/exercises_$lang'
-    ).doc(exerciseId);
+        'tutorials/${widget.tutorialId}/exercises_${widget.lang}'
+    ).doc(widget.exerciseId);
 
     return MainLayout(
         title: Row(
@@ -53,7 +49,7 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.vRouter.to(TutorialsListScreen.routePath);
+                    context.push(TutorialsListScreen.routePath);
                   },
                   child: const Text(
                     'Tutorials',
@@ -64,14 +60,14 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.vRouter.to(ExercisesListScreen.routePath.replaceFirst(
+                    context.push(ExercisesListScreen.routePath.replaceFirst(
                         ':tutorial_id',
-                        tutorialId!
-                    ).replaceFirst(':lang', lang!));
+                        widget.tutorialId
+                    ).replaceFirst(':lang', widget.lang));
                   },
                   child: Text(
                     ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' :
-                    ''} (${kLanguages[lang]})',
+                    ''} (${kLanguages[widget.lang]})',
                     style: const TextStyle(color: Colors.white),
                   )),
             ),
@@ -85,7 +81,7 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
 
               return ExerciseForm(
                 id: snapshot.data?.id,
-                tutorialId: tutorialId!,
+                tutorialId: widget.tutorialId,
                 data: snapshot.data?.data() as Map,
                 action: 'update',
                 onSuccess: (tutorialId, exerciseId) {
@@ -97,7 +93,7 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
                 onFail: (exception) {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(exception)));
-                }, languageCode: lang!,
+                }, languageCode: widget.lang,
               );
             }
 

@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:modern_turkmen_admin/controllers/file_dropzone_controller.dart';
 import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
@@ -26,10 +25,10 @@ class ExerciseItem extends StatefulWidget {
   final ExerciseItemController controller;
 
   const ExerciseItem({
-    Key? key,
+    super.key,
     required this.onRemove,
     required this.controller,
-  }) : super(key: key);
+  });
 
   @override
   State<ExerciseItem> createState() => _ExerciseItemState();

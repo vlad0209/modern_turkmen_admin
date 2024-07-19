@@ -1,6 +1,5 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:modern_turkmen_admin/helpers/uploader.dart';
 import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
@@ -17,13 +16,12 @@ class TutorialForm extends StatefulWidget {
   final Map? data;
 
   const TutorialForm(
-      {Key? key,
+      {super.key,
       required this.action,
       required this.onSuccess,
       required this.onFail,
         this.id,
-      this.data})
-      : super(key: key);
+      this.data});
 
   @override
   State<TutorialForm> createState() => _TutorialFormState();
@@ -270,12 +268,9 @@ class _TutorialFormState extends State<TutorialForm> {
         _dropzoneImageController,
         (ref) async {
             String imageUrl = await ref.getDownloadURL();
-            final storageRef = FirebaseStorage.instance.ref();
-            final thumbRef = storageRef.child('thumb_${ref.name}');
 
             setState(() {
               image = imageUrl;
-              //thumb = thumbUrl;
             });
 
         },

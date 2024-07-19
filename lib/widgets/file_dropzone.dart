@@ -8,14 +8,12 @@ import '../controllers/file_dropzone_controller.dart';
 
 class FileDropzone extends StatefulWidget {
   const FileDropzone({
-    Key? key,
+    super.key,
     required this.label,
     required this.onDrop,
     required this.controller,
     this.fileType = 'image'
-  }) : super(
-      key: key
-  );
+  });
   final String label;
   final dynamic Function(dynamic) onDrop;
   final FileDropzoneController controller;

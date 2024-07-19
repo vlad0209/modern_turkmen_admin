@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/screens/add_tutorial_screen.dart';
 import 'package:modern_turkmen_admin/screens/add_exercise_screen.dart';
 import 'package:modern_turkmen_admin/screens/edit_tutorial_screen.dart';
@@ -8,11 +8,9 @@ import 'package:modern_turkmen_admin/screens/login_screen.dart';
 import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,16 +18,71 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-
-  runApp(const MyApp());
+  runApp(MyApp(
+    auth: FirebaseAuth.instance,
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({super.key, required this.auth});
+  final FirebaseAuth auth;
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final _router = GoRouter(redirect: _redirect, routes: [
+    GoRoute(
+      path: '/',
+      redirect: (context, state) => TutorialsListScreen.routePath,
+    ),
+    GoRoute(
+      path: LoginScreen.routePath,
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: TutorialsListScreen.routePath,
+      builder: (context, state) => const TutorialsListScreen(),
+    ),
+    GoRoute(
+      path: AddTutorialScreen.routePath,
+      builder: (context, state) => const AddTutorialScreen(),
+    ),
+    GoRoute(
+      path: EditTutorialScreen.routePath,
+      builder: (context, state) => EditTutorialScreen(
+        tutorialId: state.pathParameters['id']!,
+      ),
+    ),
+    GoRoute(
+      path: ExercisesListScreen.routePath,
+      builder: (context, state) => ExercisesListScreen(
+        tutorialId: state.pathParameters['tutorial_id']!,
+        languageCode: state.pathParameters['lang']!,
+      ),
+    ),
+    GoRoute(
+      path: AddExerciseScreen.routePath,
+      builder: (context, state) => AddExerciseScreen(
+        tutorialId: state.pathParameters['tutorial_id']!,
+        language: state.pathParameters['lang']!,
+      ),
+    ),
+    GoRoute(
+      path: EditExerciseScreen.routePath,
+      builder: (context, state) => EditExerciseScreen(
+        tutorialId: state.pathParameters['tutorial_id']!,
+        exerciseId: state.pathParameters['exercise_id']!,
+        lang: state.pathParameters['lang']!,
+      ),
+    )
+  ]);
 
   @override
   Widget build(BuildContext context) {
-    return VRouter(
+    return MaterialApp.router(
+      routerConfig: _router,
       title: 'Modern Turkmen Admin',
       theme: ThemeData(
           brightness: Brightness.light,
@@ -37,59 +90,18 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(fontSize: 14.0),
           )),
       debugShowCheckedModeBanner: false,
-      mode: VRouterMode.history,
-      initialUrl: TutorialsListScreen.routePath,
-      routes: [
-        VWidget(path: LoginScreen.routePath, widget: const LoginScreen()),
-        VGuard(
-            beforeEnter: (vRedirector) async {
-              bool authorized;
-              User? currentUser = FirebaseAuth.instance.currentUser;
-              currentUser ??= await FirebaseAuth.instance.authStateChanges().first;
-              if(currentUser == null) {
-                authorized = false;
-              } else {
-                final userData = (await FirebaseFirestore.instance.doc(
-                    'users/${currentUser.uid}'
-                ).get()).data();
-                if(userData == null) {
-                  authorized = false;
-                } else {
-                  authorized = userData['admin'];
-                }
-              }
-              if(!authorized) {
-                vRedirector.to(LoginScreen.routePath);
-              } else {
-                return null;
-              }
-            },
-            stackedRoutes: [
-              VWidget(
-                  path: TutorialsListScreen.routePath,
-                  widget: const TutorialsListScreen()),
-              VWidget(
-                  path: AddTutorialScreen.routePath,
-                  widget: const AddTutorialScreen()
-              ),
-              VWidget(
-                  path: EditTutorialScreen.routePath,
-                  widget: const EditTutorialScreen()
-              ),
-              VWidget(
-                  path: ExercisesListScreen.routePath,
-                  widget: const ExercisesListScreen()
-              ),
-              VWidget(
-                  path: AddExerciseScreen.routePath,
-                  widget: const AddExerciseScreen()
-              ),
-              VWidget(
-                  path: EditExerciseScreen.routePath,
-                  widget: const EditExerciseScreen()
-              ),
-            ])
-      ],
     );
+  }
+
+  String? _redirect(BuildContext context, GoRouterState state) {
+    final isLoggedIn = widget.auth.currentUser != null;
+    final isLoginRoute = state.matchedLocation == LoginScreen.routePath;
+
+    if (!isLoggedIn && !isLoginRoute) {
+      return LoginScreen.routePath;
+    } else if (isLoggedIn && isLoginRoute) {
+      return TutorialsListScreen.routePath;
+    }
+    return null;
   }
 }

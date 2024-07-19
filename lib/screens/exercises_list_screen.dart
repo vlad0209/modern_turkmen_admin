@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
 import 'package:modern_turkmen_admin/screens/add_exercise_screen.dart';
 import 'package:modern_turkmen_admin/screens/edit_exercise_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 class ExercisesListScreen extends StatefulWidget {
-  const ExercisesListScreen({Key? key}) : super(key: key);
+  const ExercisesListScreen({super.key, required this.tutorialId, required this.languageCode});
+  final String tutorialId;
+  final String languageCode;
   static String routePath = '/tutorials/:tutorial_id/:lang/exercises';
 
   @override
@@ -19,16 +21,13 @@ class ExercisesListScreen extends StatefulWidget {
 class _ExercisesListScreenState extends State<ExercisesListScreen> {
   late Stream<QuerySnapshot> _exercisesStream;
   String tutorialName = '';
-  late String tutorialId;
-  late String languageCode;
 
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      String? tutorialId = context.vRouter.pathParameters['tutorial_id'];
 
       FirebaseFirestore.instance.collection('tutorials')
-          .doc(tutorialId).get().then((tutorial) {
+          .doc(widget.tutorialId).get().then((tutorial) {
             setState(() {
               tutorialName = tutorial['title_en'];
             });
@@ -41,11 +40,9 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    tutorialId = context.vRouter.pathParameters['tutorial_id']!;
-    languageCode = context.vRouter.pathParameters['lang']!;
 
     _exercisesStream = FirebaseFirestore.instance.collection(
-        'tutorials/$tutorialId/exercises_$languageCode'
+        'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}'
     ).snapshots();
 
     return MainLayout(
@@ -55,7 +52,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.vRouter.to(TutorialsListScreen.routePath);
+                  context.push(TutorialsListScreen.routePath);
                 },
                 child: const Text(
                   'Tutorials',
@@ -64,7 +61,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
           ),
           Text(
             ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} '
-                '(${kLanguages[languageCode]})',
+                '(${kLanguages[widget.languageCode]})',
             style: const TextStyle(color: Colors.white),
           ),
         ],
@@ -91,9 +88,9 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
                       return ListTile(
                         title: TextButton(
                           onPressed: () =>
-                              context.vRouter.to(EditExerciseScreen.routePath
-                                  .replaceFirst(':tutorial_id', tutorialId)
-                                  .replaceFirst(':lang', languageCode)
+                              context.push(EditExerciseScreen.routePath
+                                  .replaceFirst(':tutorial_id', widget.tutorialId)
+                                  .replaceFirst(':lang', widget.languageCode)
                                   .replaceFirst(':exercise_id', document.id)),
                           child: Text(data['description']),
                         ),
@@ -114,10 +111,10 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
       ),
       floatActionButton: FloatingActionButton(
         onPressed: () {
-          context.vRouter.to(AddExerciseScreen.routePath.replaceFirst(
+          context.push(AddExerciseScreen.routePath.replaceFirst(
               ':tutorial_id',
-              tutorialId
-          ).replaceFirst(':lang', languageCode));
+              widget.tutorialId
+          ).replaceFirst(':lang', widget.languageCode));
         },
         child: const Icon(Icons.add),
       ),
@@ -137,7 +134,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
                 TextButton(
                   onPressed: () {
                     FirebaseFirestore.instance
-                        .doc('tutorials/$tutorialId/exercises_$languageCode/$exerciseId')
+                        .doc('tutorials/${widget.tutorialId}/exercises_${widget.languageCode}/$exerciseId')
                         .delete()
                         .then((value) => Navigator.pop(context, 'OK'));
                   },

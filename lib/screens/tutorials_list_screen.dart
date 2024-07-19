@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
 import 'package:modern_turkmen_admin/screens/add_tutorial_screen.dart';
 import 'package:modern_turkmen_admin/screens/edit_tutorial_screen.dart';
 import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 import '../main_layout.dart';
 
 class TutorialsListScreen extends StatefulWidget {
-  const TutorialsListScreen({Key? key}) : super(key: key);
+  const TutorialsListScreen({super.key});
   static String routePath = '/tutorials';
 
   @override
@@ -50,7 +50,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
                       return ListTile(
                         title: TextButton(
                           onPressed: () =>
-                              context.vRouter.to(EditTutorialScreen.routePath
+                              context.push(EditTutorialScreen.routePath
                                   .replaceFirst(':id', document.id)),
                           child: Text(data['title_en']),
                         ),
@@ -61,7 +61,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
                               Row(
                                 children: kLanguages.keys.map(
                                         (languageCode) => TextButton(
-                                          onPressed: () => context.vRouter.to(
+                                          onPressed: () => context.push(
                                               ExercisesListScreen.routePath
                                                   .replaceFirst(
                                                   ':tutorial_id', 
@@ -95,7 +95,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
       ),
       floatActionButton: FloatingActionButton(
         onPressed: () {
-          context.vRouter.to(AddTutorialScreen.routePath);
+          context.push(AddTutorialScreen.routePath);
         },
         child: const Icon(Icons.add),
       ),
