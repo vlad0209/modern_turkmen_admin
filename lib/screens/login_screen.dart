@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
     super.key,
+    required this.auth,
+    required this.firestore
   });
-  static String routePath = '/login';
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -27,7 +29,7 @@ class LoginScreenState extends State<LoginScreen> {
       loggingRequestStatus = 'pending';
     });
 
-    FirebaseAuth.instance
+    widget.auth
         .signInWithEmailAndPassword(email: _email, password: _password)
         .then((credential) async {
       bool authorized;
@@ -35,7 +37,7 @@ class LoginScreenState extends State<LoginScreen> {
       if (currentUser == null) {
         authorized = false;
       } else {
-        final userData = (await FirebaseFirestore.instance
+        final userData = (await widget.firestore
                 .doc('users/${currentUser.uid}')
                 .get())
             .data();
@@ -47,7 +49,7 @@ class LoginScreenState extends State<LoginScreen> {
       }
 
       if(authorized && mounted) {
-        context.push(TutorialsListScreen.routePath);
+        context.go('/tutorials');
       } else {
         setState(() {
           _errorMessage = "You don't have admin permissions";

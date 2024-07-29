@@ -1,14 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modern_turkmen_admin/screens/edit_tutorial_screen.dart';
-import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 import 'package:modern_turkmen_admin/widgets/tutorial_form.dart';
 import 'package:flutter/material.dart';
 
 import '../main_layout.dart';
 
 class AddTutorialScreen extends StatelessWidget {
-  const AddTutorialScreen({super.key});
-  static String routePath = '/tutorials/add-tutorial';
+  final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
+  
+  final FirebaseStorage storage;
+  const AddTutorialScreen({super.key, required this.auth, required this.firestore, required this.storage});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,7 @@ class AddTutorialScreen extends StatelessWidget {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.push(TutorialsListScreen.routePath);
+                  context.go('/tutorials');
                 },
                 child: const Text(
                   'Tutorials',
@@ -38,14 +43,15 @@ class AddTutorialScreen extends StatelessWidget {
                 backgroundColor: Colors.lightGreen,
               )
           );
-          context.push(EditTutorialScreen.routePath.replaceFirst(':id', id));
+          context.go('/tutorials/edit-tutorial/$id');
         },
         onFail: () {
           ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Failed to create a tutorial'))
           );
         },
-      ),
+        auth: auth, firestore: firestore, storage: storage,
+      ), auth: auth,
     );
   }
 }

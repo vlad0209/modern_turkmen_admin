@@ -1,20 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
-import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
-import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
 import 'package:modern_turkmen_admin/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 
 import '../main_layout.dart';
 
-
 class EditExerciseScreen extends StatefulWidget {
-  const EditExerciseScreen({super.key, required this.tutorialId, required this.exerciseId, required this.lang});
-  static String routePath = '/tutorials/:tutorial_id/:lang/edit-exercise/:exercise_id';
+  const EditExerciseScreen(
+      {super.key,
+      required this.tutorialId,
+      required this.exerciseId,
+      required this.lang,
+      required this.auth,
+      required this.firestore,
+      required this.storage});
   final String tutorialId;
   final String exerciseId;
   final String lang;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
   @override
   State<EditExerciseScreen> createState() => _EditExerciseScreenState();
 }
@@ -25,31 +33,34 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-      FirebaseFirestore.instance.collection('tutorials')
-          .doc(widget.tutorialId).get().then((tutorial) {
+      widget.firestore
+          .collection('tutorials')
+          .doc(widget.tutorialId)
+          .get()
+          .then((tutorial) {
         setState(() {
           tutorialName = tutorial['title_en'];
         });
       });
-
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final DocumentReference exerciseRef = FirebaseFirestore.instance.collection(
-        'tutorials/${widget.tutorialId}/exercises_${widget.lang}'
-    ).doc(widget.exerciseId);
+    final DocumentReference exerciseRef = widget.firestore
+        .collection('tutorials/${widget.tutorialId}/exercises_${widget.lang}')
+        .doc(widget.exerciseId);
 
     return MainLayout(
+        auth: widget.auth,
         title: Row(
           children: [
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.push(TutorialsListScreen.routePath);
+                    context.go('/tutorials');
                   },
                   child: const Text(
                     'Tutorials',
@@ -60,14 +71,11 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.push(ExercisesListScreen.routePath.replaceFirst(
-                        ':tutorial_id',
-                        widget.tutorialId
-                    ).replaceFirst(':lang', widget.lang));
+                    context.push(
+                        '/tutorials/${widget.tutorialId}/${widget.lang}/exercises');
                   },
                   child: Text(
-                    ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' :
-                    ''} (${kLanguages[widget.lang]})',
+                    ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} (${kLanguages[widget.lang]})',
                     style: const TextStyle(color: Colors.white),
                   )),
             ),
@@ -78,8 +86,8 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
           future: exerciseRef.get(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-
               return ExerciseForm(
+                firestore: widget.firestore,
                 id: snapshot.data?.id,
                 tutorialId: widget.tutorialId,
                 data: snapshot.data?.data() as Map,
@@ -93,7 +101,10 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
                 onFail: (exception) {
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(content: Text(exception)));
-                }, languageCode: widget.lang,
+                },
+                languageCode: widget.lang,
+                auth: widget.auth,
+                storage: widget.storage,
               );
             }
 

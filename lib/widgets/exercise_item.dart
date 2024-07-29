@@ -1,9 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:modern_turkmen_admin/controllers/file_dropzone_controller.dart';
-import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
-
-import '../helpers/uploader.dart';
+import 'package:modern_turkmen_admin/widgets/dropzone.dart';
 
 class ExerciseItemController {
   String soundUrl;
@@ -23,12 +22,15 @@ class ExerciseItemController {
 class ExerciseItem extends StatefulWidget {
   final void Function() onRemove;
   final ExerciseItemController controller;
+  final FirebaseAuth auth;
+  final FirebaseStorage storage;
 
-  const ExerciseItem({
-    super.key,
-    required this.onRemove,
-    required this.controller,
-  });
+  const ExerciseItem(
+      {super.key,
+      required this.onRemove,
+      required this.controller,
+      required this.auth,
+      required this.storage});
 
   @override
   State<ExerciseItem> createState() => _ExerciseItemState();
@@ -36,7 +38,6 @@ class ExerciseItem extends StatefulWidget {
 
 class _ExerciseItemState extends State<ExerciseItem> {
   final _addFormKey = GlobalKey<FormState>();
-  final FileDropzoneController _soundController = FileDropzoneController();
   final AudioPlayer player = AudioPlayer();
   late String soundUrl;
   PlayerState? playerState;
@@ -81,7 +82,9 @@ class _ExerciseItemState extends State<ExerciseItem> {
               SizedBox(
                   width: MediaQuery.of(context).size.width / 6,
                   child: TextFormField(
-                    decoration: const InputDecoration(labelText: 'Solution (use <f/> tag to add word placeholders'),
+                    decoration: const InputDecoration(
+                        labelText:
+                            'Solution (use <f/> tag to add word placeholders'),
                     initialValue: widget.controller.solution,
                     onChanged: (value) {
                       widget.controller.solution = value;
@@ -99,7 +102,8 @@ class _ExerciseItemState extends State<ExerciseItem> {
               SizedBox(
                   width: MediaQuery.of(context).size.width / 6,
                   child: TextFormField(
-                    decoration: const InputDecoration(labelText: 'Options (comma separated)'),
+                    decoration: const InputDecoration(
+                        labelText: 'Options (comma separated)'),
                     initialValue: widget.controller.options,
                     onChanged: (value) {
                       widget.controller.options = value;
@@ -109,11 +113,17 @@ class _ExerciseItemState extends State<ExerciseItem> {
                 width: 9,
               ),
               soundUrl.isEmpty
-                  ? FileDropzone(
+                  ? Dropzone(
                       label: 'Sound (mp3)',
-                      onDrop: (files) => uploadSound(files.first),
-                      controller: _soundController,
-                      fileType: 'mp3',
+                      auth: widget.auth,
+                      mime: const ['audio/mp3'],
+                      onFileUploaded: (String downloadUrl) {
+                        soundFuture = player.setSourceUrl(downloadUrl);
+                        setState(() {
+                          soundUrl = downloadUrl;
+                        });
+                      },
+                      storage: widget.storage,
                     )
                   : Column(
                       children: [
@@ -139,7 +149,6 @@ class _ExerciseItemState extends State<ExerciseItem> {
                             onPressed: () {
                               setState(() {
                                 soundUrl = '';
-                                _soundController.reset();
                                 widget.controller.soundUrl = '';
                               });
                             },
@@ -152,22 +161,12 @@ class _ExerciseItemState extends State<ExerciseItem> {
               IconButton(
                   onPressed: () {
                     widget.onRemove();
-                  }, icon: const Icon(Icons.delete))
+                  },
+                  icon: const Icon(Icons.delete))
             ],
           ),
         ),
       ),
     );
-  }
-
-  void uploadSound(file) {
-    Uploader.uploadFile(file, _soundController, (ref) async {
-      String url = await ref.getDownloadURL();
-
-      soundFuture = player.setSourceUrl(url);
-      setState(() {
-        soundUrl = url;
-      });
-    });
   }
 }

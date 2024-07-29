@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modern_turkmen_admin/widgets/exercise_item.dart';
 
@@ -10,16 +12,22 @@ class ExerciseForm extends StatefulWidget {
   final String tutorialId;
   final String languageCode;
   final Map? data;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
 
   const ExerciseForm(
       {super.key,
       required this.action,
       required this.onSuccess,
       required this.onFail,
-        required this.tutorialId,
-        required this.languageCode,
-        this.id,
-      this.data});
+      required this.tutorialId,
+      required this.languageCode,
+      this.id,
+      this.data,
+      required this.auth,
+      required this.firestore,
+      required this.storage});
 
   @override
   State<ExerciseForm> createState() => _ExerciseFormState();
@@ -29,37 +37,38 @@ class _ExerciseFormState extends State<ExerciseForm> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _exampleController = TextEditingController();
   final TextEditingController _exampleTranslationController =
-  TextEditingController();
+      TextEditingController();
 
   String requestStatus = 'idle';
   final _formKey = GlobalKey<FormState>();
   List items = [];
-
 
   @override
   void initState() {
     if (widget.data != null) {
       _descriptionController.text = widget.data!['description'];
       _exampleController.text = widget.data!['example'];
-      _exampleTranslationController.text = widget.data!['example_translation']?? '';
+      _exampleTranslationController.text =
+          widget.data!['example_translation'] ?? '';
       int itemIndex = 0;
       items = widget.data!['items'].map((item) {
         itemIndex++;
         Key key = Key('item_$itemIndex');
         return ExerciseItem(
-            key: key,
-            onRemove: () {
-              setState(() {
-                items.removeWhere((item) => item.key == key);
-              });
-            },
-            controller: ExerciseItemController(
-                soundUrl: item['sound'],
-                options: item['options'].join(','),
-                sentence: item['sentence'],
-                solution: item['solution'],
-                translation: item['translation'],
-            )
+          key: key,
+          onRemove: () {
+            setState(() {
+              items.removeWhere((item) => item.key == key);
+            });
+          },
+          controller: ExerciseItemController(
+            soundUrl: item['sound'],
+            options: item['options'].join(','),
+            sentence: item['sentence'],
+            solution: item['solution'],
+            translation: item['translation'],
+          ),
+          auth: widget.auth, storage: widget.storage,
         );
       }).toList();
     }
@@ -89,8 +98,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       child: TextFormField(
                         decoration: const InputDecoration(
                             labelText: 'Description',
-                            border: OutlineInputBorder()
-                        ),
+                            border: OutlineInputBorder()),
                         controller: _descriptionController,
                         minLines: 8,
                         maxLines: 11,
@@ -106,9 +114,9 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       margin: const EdgeInsets.only(top: 11),
                       child: TextFormField(
                         decoration: const InputDecoration(
-                            labelText: 'Example (use <f></f> tag to add word tags)',
-                            border: OutlineInputBorder()
-                        ),
+                            labelText:
+                                'Example (use <f></f> tag to add word tags)',
+                            border: OutlineInputBorder()),
                         controller: _exampleController,
                         minLines: 8,
                         maxLines: 11,
@@ -125,8 +133,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       child: TextFormField(
                         decoration: const InputDecoration(
                             labelText: 'Example translation',
-                            border: OutlineInputBorder()
-                        ),
+                            border: OutlineInputBorder()),
                         controller: _exampleTranslationController,
                         minLines: 8,
                         maxLines: 11,
@@ -139,10 +146,11 @@ class _ExerciseFormState extends State<ExerciseForm> {
                       ),
                     ),
                     Container(
-                        margin: const EdgeInsets.only(top: 11),
-                        child: const Text('Items', style: TextStyle(
-                            fontWeight: FontWeight.bold
-                        ),),
+                      margin: const EdgeInsets.only(top: 11),
+                      child: const Text(
+                        'Items',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Column(
                       children: [
@@ -178,8 +186,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
     );
   }
 
-
-
   void submitForm() async {
     if (requestStatus == 'pending') {
       return;
@@ -190,41 +196,42 @@ class _ExerciseFormState extends State<ExerciseForm> {
         requestStatus = 'pending';
       });
 
-
-
       Map<String, dynamic> data = {
         'description': _descriptionController.text,
         'example': _exampleController.text,
-        'items': items.map((item) => {
-          'options': item.controller.options.split(',').map((e) => e.trim()).toList(),
-          'sentence': item.controller.sentence,
-          'solution': item.controller.solution,
-          'sound': item.controller.soundUrl,
-          'translation': item.controller.translation
-        }).toList()
+        'items': items
+            .map((item) => {
+                  'options': item.controller.options
+                      .split(',')
+                      .map((e) => e.trim())
+                      .toList(),
+                  'sentence': item.controller.sentence,
+                  'solution': item.controller.solution,
+                  'sound': item.controller.soundUrl,
+                  'translation': item.controller.translation
+                })
+            .toList()
       };
 
       try {
         String? exerciseId;
         if (widget.action == 'create') {
-          final exercise = await FirebaseFirestore.instance
+          final exercise = await widget.firestore
               .collection('tutorials/${widget.tutorialId}'
-              '/exercises_${widget.languageCode}')
+                  '/exercises_${widget.languageCode}')
               .add(data);
           exerciseId = exercise.id;
         } else if (widget.action == 'update') {
-          await FirebaseFirestore.instance.collection(
-              'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}'
-          ).doc(
-              widget.id
-          ).set(data);
+          await widget.firestore
+              .collection(
+                  'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}')
+              .doc(widget.id)
+              .set(data);
           exerciseId = widget.id;
         }
-        if(exerciseId != null) {
+        if (exerciseId != null) {
           widget.onSuccess(widget.tutorialId, exerciseId);
         }
-
-
       } on Exception catch (exception) {
         widget.onFail(exception);
       }
@@ -237,22 +244,18 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   void addItem() {
     final controller = ExerciseItemController(
-        soundUrl: '',
-        options: '',
-        sentence: '',
-        solution: '',
-        translation: ''
-    );
+        soundUrl: '', options: '', sentence: '', solution: '', translation: '');
     setState(() {
       Key key = Key('item_${items.length + 1}');
       items.add(ExerciseItem(
-          key: key,
-          onRemove: () {
-            setState(() {
-              items.removeWhere((item) => item.key == key);
-            });
-          },
-          controller: controller
+        key: key,
+        onRemove: () {
+          setState(() {
+            items.removeWhere((item) => item.key == key);
+          });
+        },
+        controller: controller,
+        auth: widget.auth, storage: widget.storage,
       ));
     });
   }

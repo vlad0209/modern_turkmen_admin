@@ -1,24 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
-import 'package:modern_turkmen_admin/screens/add_tutorial_screen.dart';
-import 'package:modern_turkmen_admin/screens/edit_tutorial_screen.dart';
-import 'package:modern_turkmen_admin/screens/exercises_list_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../main_layout.dart';
 
 class TutorialsListScreen extends StatefulWidget {
-  const TutorialsListScreen({super.key});
-  static String routePath = '/tutorials';
+  const TutorialsListScreen({super.key, required this.firestore, required this.auth});
+  final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
 
   @override
   State<TutorialsListScreen> createState() => _TutorialsListScreenState();
 }
 
 class _TutorialsListScreenState extends State<TutorialsListScreen> {
-  final Stream<QuerySnapshot> _tutorialsStream =
-      FirebaseFirestore.instance.collection('tutorials').orderBy(
+  late final Stream<QuerySnapshot> _tutorialsStream =
+      widget.firestore.collection('tutorials').orderBy(
           'created_at',
           descending: true
       ).snapshots();
@@ -27,6 +26,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
+      auth: widget.auth,
       title: const Text('Tutorials'),
       body: StreamBuilder<QuerySnapshot>(
         stream: _tutorialsStream,
@@ -50,8 +50,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
                       return ListTile(
                         title: TextButton(
                           onPressed: () =>
-                              context.push(EditTutorialScreen.routePath
-                                  .replaceFirst(':id', document.id)),
+                              context.go('/tutorials/edit-tutorial/${document.id}'),
                           child: Text(data['title_en']),
                         ),
                         trailing: SizedBox(
@@ -61,15 +60,8 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
                               Row(
                                 children: kLanguages.keys.map(
                                         (languageCode) => TextButton(
-                                          onPressed: () => context.push(
-                                              ExercisesListScreen.routePath
-                                                  .replaceFirst(
-                                                  ':tutorial_id', 
-                                                  document.id
-                                              ).replaceFirst(
-                                                  ':lang', 
-                                                  languageCode
-                                              )
+                                          onPressed: () => context.go(
+                                            '/tutorials/${document.id}/$languageCode/exercises'
                                           ), 
                                           child: Text('Exercises (${kLanguages[languageCode]})'),
                                         ))
@@ -95,7 +87,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
       ),
       floatActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(AddTutorialScreen.routePath);
+          context.go('/tutorials/add-tutorial');
         },
         child: const Icon(Icons.add),
       ),
@@ -114,7 +106,7 @@ class _TutorialsListScreenState extends State<TutorialsListScreen> {
                     child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {
-                    FirebaseFirestore.instance
+                    widget.firestore
                         .doc('tutorials/$tutorialId')
                         .delete()
                         .then((value) => Navigator.pop(context, 'OK'));

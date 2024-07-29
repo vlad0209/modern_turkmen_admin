@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/constants.dart';
-import 'package:modern_turkmen_admin/screens/add_exercise_screen.dart';
-import 'package:modern_turkmen_admin/screens/edit_exercise_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:modern_turkmen_admin/screens/tutorials_list_screen.dart';
 
 import '../main_layout.dart';
 
 class ExercisesListScreen extends StatefulWidget {
-  const ExercisesListScreen({super.key, required this.tutorialId, required this.languageCode});
+  const ExercisesListScreen(
+      {super.key, required this.tutorialId, required this.languageCode, required this.firestore, required this.auth});
   final String tutorialId;
   final String languageCode;
-  static String routePath = '/tutorials/:tutorial_id/:lang/exercises';
+  final FirebaseFirestore firestore;
+  final FirebaseAuth auth;
 
   @override
   State<ExercisesListScreen> createState() => _ExercisesListScreenState();
@@ -25,25 +25,25 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
   @override
   void initState() {
     Future.delayed(Duration.zero, () {
-
-      FirebaseFirestore.instance.collection('tutorials')
-          .doc(widget.tutorialId).get().then((tutorial) {
-            setState(() {
-              tutorialName = tutorial['title_en'];
-            });
-
+      widget.firestore
+          .collection('tutorials')
+          .doc(widget.tutorialId)
+          .get()
+          .then((tutorial) {
+        setState(() {
+          tutorialName = tutorial['title_en'];
+        });
       });
-
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
-    _exercisesStream = FirebaseFirestore.instance.collection(
-        'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}'
-    ).snapshots();
+    _exercisesStream = widget.firestore
+        .collection(
+            'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}')
+        .snapshots();
 
     return MainLayout(
       title: Row(
@@ -52,7 +52,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
                 onTap: () {
-                  context.push(TutorialsListScreen.routePath);
+                  context.go('/tutorials');
                 },
                 child: const Text(
                   'Tutorials',
@@ -61,7 +61,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
           ),
           Text(
             ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} '
-                '(${kLanguages[widget.languageCode]})',
+            '(${kLanguages[widget.languageCode]})',
             style: const TextStyle(color: Colors.white),
           ),
         ],
@@ -87,11 +87,8 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
                           document.data()! as Map<String, dynamic>;
                       return ListTile(
                         title: TextButton(
-                          onPressed: () =>
-                              context.push(EditExerciseScreen.routePath
-                                  .replaceFirst(':tutorial_id', widget.tutorialId)
-                                  .replaceFirst(':lang', widget.languageCode)
-                                  .replaceFirst(':exercise_id', document.id)),
+                          onPressed: () => context.go(
+                              '/tutorials/${widget.tutorialId}/${widget.languageCode}/edit-exercise/${document.id}'),
                           child: Text(data['description']),
                         ),
                         trailing: IconButton(
@@ -111,13 +108,10 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
       ),
       floatActionButton: FloatingActionButton(
         onPressed: () {
-          context.push(AddExerciseScreen.routePath.replaceFirst(
-              ':tutorial_id',
-              widget.tutorialId
-          ).replaceFirst(':lang', widget.languageCode));
+          context.go('/tutorials/${widget.tutorialId}/${widget.languageCode}/add-exercise');
         },
         child: const Icon(Icons.add),
-      ),
+      ), auth: widget.auth,
     );
   }
 
@@ -126,15 +120,17 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
         context: context,
         builder: (context) => AlertDialog(
               title: const Text('Deleting exercise'),
-              content: const Text('Are you sure you want to delete this exercise'),
+              content:
+                  const Text('Are you sure you want to delete this exercise'),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context, 'Cancel'),
                     child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {
-                    FirebaseFirestore.instance
-                        .doc('tutorials/${widget.tutorialId}/exercises_${widget.languageCode}/$exerciseId')
+                    widget.firestore
+                        .doc(
+                            'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}/$exerciseId')
                         .delete()
                         .then((value) => Navigator.pop(context, 'OK'));
                   },

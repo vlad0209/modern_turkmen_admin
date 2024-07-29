@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
-import 'package:modern_turkmen_admin/helpers/uploader.dart';
-import 'package:modern_turkmen_admin/widgets/file_dropzone.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
-
-import '../controllers/file_dropzone_controller.dart';
+import 'package:modern_turkmen_admin/widgets/dropzone.dart';
 
 class TutorialForm extends StatefulWidget {
   final String action;
@@ -13,6 +12,9 @@ class TutorialForm extends StatefulWidget {
   final Function onFail;
   final String? id;
   final Map? data;
+  final FirebaseAuth auth;
+  final FirebaseFirestore firestore;
+  final FirebaseStorage storage;
 
   const TutorialForm(
       {super.key,
@@ -20,7 +22,10 @@ class TutorialForm extends StatefulWidget {
       required this.onSuccess,
       required this.onFail,
       this.id,
-      this.data});
+      this.data,
+      required this.auth,
+      required this.firestore,
+      required this.storage});
 
   @override
   State<TutorialForm> createState() => _TutorialFormState();
@@ -38,9 +43,6 @@ class _TutorialFormState extends State<TutorialForm> {
   bool publicEn = false;
   bool publicRu = false;
   String image = '';
-  String thumb = '';
-  final FileDropzoneController _dropzoneImageController =
-      FileDropzoneController();
   late String tutorialId;
 
   @override
@@ -51,11 +53,10 @@ class _TutorialFormState extends State<TutorialForm> {
       updatedAt = widget.data!['updated_at']?.toDate();
       publicEn = widget.data!['public_en'] ?? false;
       publicRu = widget.data!['public_ru'] ?? false;
-      image = widget.data!['image'] ?? '';
-      thumb = widget.data!['thumb'] ?? '';
+      image = widget.data!['image_url'] ?? '';
       tutorialId = widget.id!;
     } else {
-      tutorialId = FirebaseFirestore.instance.collection('tutorials').doc().id;
+      tutorialId = widget.firestore.collection('tutorials').doc().id;
     }
     super.initState();
   }
@@ -155,10 +156,15 @@ class _TutorialFormState extends State<TutorialForm> {
                     Container(
                         margin: const EdgeInsets.only(top: 11),
                         child: image.isEmpty
-                            ? FileDropzone(
+                            ? Dropzone(
+                                storage: widget.storage,
+                                auth: widget.auth,
                                 label: 'Upload image of the tutorial',
-                                onDrop: (files) => uploadImage(files.first),
-                                controller: _dropzoneImageController,
+                                onFileUploaded: (String downloadUrl) {
+                                  setState(() {
+                                    image = downloadUrl;
+                                  });
+                                },
                               )
                             : Column(
                                 children: [
@@ -167,7 +173,6 @@ class _TutorialFormState extends State<TutorialForm> {
                                       onPressed: () {
                                         setState(() {
                                           image = '';
-                                          _dropzoneImageController.reset();
                                         });
                                       },
                                       child: const Text('Replace the image'))
@@ -253,9 +258,9 @@ class _TutorialFormState extends State<TutorialForm> {
       try {
         if (widget.action == 'create') {
           data['created_at'] = Timestamp.now();
-          await FirebaseFirestore.instance.collection('tutorials').add(data);
+          await widget.firestore.collection('tutorials').add(data);
         } else if (widget.action == 'update') {
-          await FirebaseFirestore.instance
+          await widget.firestore
               .collection('tutorials')
               .doc(tutorialId)
               .update(data);
@@ -270,15 +275,5 @@ class _TutorialFormState extends State<TutorialForm> {
         updatedAt = data['updated_at'].toDate();
       });
     }
-  }
-
-  void uploadImage(file) {
-    Uploader.uploadFile(file, _dropzoneImageController, (ref) async {
-      String imageUrl = await ref.getDownloadURL();
-
-      setState(() {
-        image = imageUrl;
-      });
-    }, filename: 'tutorial_image_$tutorialId');
   }
 }
