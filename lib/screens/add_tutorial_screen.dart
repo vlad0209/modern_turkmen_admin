@@ -28,7 +28,6 @@ class AddTutorialScreen extends StatelessWidget {
                 },
                 child: const Text(
                   'Tutorials',
-                  style: TextStyle(color: Colors.white),
                 )),
           ),
           const Text(' > Add tutorial')

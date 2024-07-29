@@ -73,7 +73,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
               SizedBox(
                   width: MediaQuery.of(context).size.width / 6,
                   child: TextFormField(
-                    decoration: const InputDecoration(labelText: 'Sentence'),
+                    decoration: const InputDecoration(labelText: 'Sentence (use <f/> tag to add word placeholders)'),
                     initialValue: widget.controller.sentence,
                     onChanged: (value) {
                       widget.controller.sentence = value;
@@ -84,7 +84,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                   child: TextFormField(
                     decoration: const InputDecoration(
                         labelText:
-                            'Solution (use <f/> tag to add word placeholders'),
+                            'Solution'),
                     initialValue: widget.controller.solution,
                     onChanged: (value) {
                       widget.controller.solution = value;

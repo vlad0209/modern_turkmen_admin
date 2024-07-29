@@ -59,7 +59,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 },
                 child: const Text(
                   'Tutorials',
-                  style: TextStyle(color: Colors.white),
                 )),
           ),
           MouseRegion(
@@ -71,7 +70,6 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
                 },
                 child: Text(
                   ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} (${kLanguages[widget.language]})',
-                  style: const TextStyle(color: Colors.white),
                 )),
           ),
           const Text(' > Add exercise')
@@ -86,7 +84,7 @@ class _AddExerciseScreenState extends State<AddExerciseScreen> {
             backgroundColor: Colors.lightGreen,
           ));
           context.go(
-              '/tutorials/$tutorialId/${widget.language}/edit-exercise/:exercise_id');
+              '/tutorials/$tutorialId/${widget.language}/edit-exercise/$exerciseId');
         },
         onFail: () {
           ScaffoldMessenger.of(context).showSnackBar(
