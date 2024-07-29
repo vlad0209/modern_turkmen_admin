@@ -55,8 +55,8 @@ class _DropzoneState extends State<Dropzone> {
           radius: const Radius.circular(8),
           dashPattern: const [8, 2],
           child: Container(
-            width: double.infinity,
-            height: 180,
+            width: widget.width,
+            height: widget.height,
             decoration: BoxDecoration(
               //On hover I want to show light blue color
               color: isHighlighted
@@ -169,6 +169,9 @@ class _DropzoneState extends State<Dropzone> {
     try {
       // Check file type
       final mimeType = lookupMimeType(localFileName);
+      if (kDebugMode) {
+        print("Mime type: $mimeType");
+      }
       if (!widget.mime.contains(mimeType)) {
         setState(() {
           isUploading = false;

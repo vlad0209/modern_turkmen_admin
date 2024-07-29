@@ -48,7 +48,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
   @override
   void initState() {
     soundUrl = widget.controller.soundUrl;
-    if (!soundUrl.isNotEmpty) {
+    if (soundUrl.isNotEmpty) {
       soundFuture = player.setSourceUrl(soundUrl);
     }
     player.onPlayerStateChanged.listen((event) {
@@ -114,9 +114,12 @@ class _ExerciseItemState extends State<ExerciseItem> {
               ),
               soundUrl.isEmpty
                   ? Dropzone(
-                      label: 'Sound (mp3)',
+                      width: 200,
+                      height: 200,
+                      label: 'Sound',
                       auth: widget.auth,
-                      mime: const ['audio/mp3'],
+                      mime: const ['audio/mp3', 'audio/mp4'],
+                      mimeErrorMessage: 'Only audio/mp3 and audio/mp3 allowed',
                       onFileUploaded: (String downloadUrl) {
                         soundFuture = player.setSourceUrl(downloadUrl);
                         setState(() {

@@ -41,7 +41,6 @@ class _EditTutorialScreenState extends State<EditTutorialScreen> {
                   },
                   child: const Text(
                     'Tutorials',
-                    style: TextStyle(color: Colors.white),
                   )),
             ),
             const Text(' > Edit tutorial')

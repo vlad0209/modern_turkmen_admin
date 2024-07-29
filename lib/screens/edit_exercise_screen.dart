@@ -64,19 +64,17 @@ class _EditExerciseScreenState extends State<EditExerciseScreen> {
                   },
                   child: const Text(
                     'Tutorials',
-                    style: TextStyle(color: Colors.white),
                   )),
             ),
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                   onTap: () {
-                    context.push(
+                    context.go(
                         '/tutorials/${widget.tutorialId}/${widget.lang}/exercises');
                   },
                   child: Text(
                     ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} (${kLanguages[widget.lang]})',
-                    style: const TextStyle(color: Colors.white),
                   )),
             ),
             const Text(' > Edit exercise')

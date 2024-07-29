@@ -42,10 +42,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
   String requestStatus = 'idle';
   final _formKey = GlobalKey<FormState>();
   List items = [];
+  
+  final _orderNumberController = TextEditingController();
 
   @override
   void initState() {
     if (widget.data != null) {
+      _orderNumberController.text = widget.data!['order_number']?.toString() ?? '0';
       _descriptionController.text = widget.data!['description'];
       _exampleController.text = widget.data!['example'];
       _exampleTranslationController.text =
@@ -93,6 +96,17 @@ class _ExerciseFormState extends State<ExerciseForm> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 11),
+                      width: 70,
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                            labelText: 'Order number',
+                            border: OutlineInputBorder()),
+                        controller: _orderNumberController,
+                      ),
+                    ),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: TextFormField(
@@ -197,8 +211,10 @@ class _ExerciseFormState extends State<ExerciseForm> {
       });
 
       Map<String, dynamic> data = {
+        'order_number': int.tryParse(_orderNumberController.text) ?? 0,
         'description': _descriptionController.text,
         'example': _exampleController.text,
+        'example_translation': _exampleTranslationController.text,
         'items': items
             .map((item) => {
                   'options': item.controller.options

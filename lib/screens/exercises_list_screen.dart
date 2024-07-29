@@ -43,6 +43,7 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
     _exercisesStream = widget.firestore
         .collection(
             'tutorials/${widget.tutorialId}/exercises_${widget.languageCode}')
+            .orderBy('order_number')
         .snapshots();
 
     return MainLayout(
