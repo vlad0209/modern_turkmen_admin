@@ -124,6 +124,7 @@ class _ExerciseItemState extends State<ExerciseItem> {
                         soundFuture = player.setSourceUrl(downloadUrl);
                         setState(() {
                           soundUrl = downloadUrl;
+                          widget.controller.soundUrl = soundUrl;
                         });
                       },
                       storage: widget.storage,

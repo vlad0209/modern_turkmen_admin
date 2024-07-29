@@ -35,7 +35,7 @@ Select the same Firebase project you use for the modern_turkmen app.
 Build the app for Web:
 
 ```bash
-$ flutter build web --web-renderer html
+$ flutter build web
 ```
 
 In the [Firebase Console](https://console.firebase.google.com/) in Authentication 

@@ -47,6 +47,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.data != null) {
       _orderNumberController.text = widget.data!['order_number']?.toString() ?? '0';
       _descriptionController.text = widget.data!['description'];
@@ -75,7 +76,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
         );
       }).toList();
     }
-    super.initState();
+    
   }
 
   @override

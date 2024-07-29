@@ -57,13 +57,11 @@ class _ExercisesListScreenState extends State<ExercisesListScreen> {
                 },
                 child: const Text(
                   'Tutorials',
-                  style: TextStyle(color: Colors.white),
                 )),
           ),
           Text(
             ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} '
             '(${kLanguages[widget.languageCode]})',
-            style: const TextStyle(color: Colors.white),
           ),
         ],
       ),
