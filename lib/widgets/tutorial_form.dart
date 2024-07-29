@@ -252,7 +252,7 @@ class _TutorialFormState extends State<TutorialForm> {
         'updated_at': Timestamp.now(),
         'public_en': publicEn,
         'public_ru': publicRu,
-        'image': image,
+        'image_url': image,
       };
 
       try {
