@@ -14,7 +14,6 @@ abstract class Tutorial with _$Tutorial {
     required String? imageUrl,
     required String? contentEn,
     required String? contentRu,
-    required DateTime? updatedAt,
     required bool publicEn,
     required bool publicRu,
   }) = _Tutorial;

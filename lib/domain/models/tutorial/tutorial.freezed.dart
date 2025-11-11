@@ -21,7 +21,6 @@ mixin _$Tutorial {
   String? get imageUrl;
   String? get contentEn;
   String? get contentRu;
-  DateTime? get updatedAt;
   bool get publicEn;
   bool get publicRu;
 
@@ -51,8 +50,6 @@ mixin _$Tutorial {
                 other.contentEn == contentEn) &&
             (identical(other.contentRu, contentRu) ||
                 other.contentRu == contentRu) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.publicEn, publicEn) ||
                 other.publicEn == publicEn) &&
             (identical(other.publicRu, publicRu) ||
@@ -62,11 +59,11 @@ mixin _$Tutorial {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, titleEn, titleRu, thumbUrl,
-      imageUrl, contentEn, contentRu, updatedAt, publicEn, publicRu);
+      imageUrl, contentEn, contentRu, publicEn, publicRu);
 
   @override
   String toString() {
-    return 'Tutorial(id: $id, titleEn: $titleEn, titleRu: $titleRu, thumbUrl: $thumbUrl, imageUrl: $imageUrl, contentEn: $contentEn, contentRu: $contentRu, updatedAt: $updatedAt, publicEn: $publicEn, publicRu: $publicRu)';
+    return 'Tutorial(id: $id, titleEn: $titleEn, titleRu: $titleRu, thumbUrl: $thumbUrl, imageUrl: $imageUrl, contentEn: $contentEn, contentRu: $contentRu, publicEn: $publicEn, publicRu: $publicRu)';
   }
 }
 
@@ -83,7 +80,6 @@ abstract mixin class $TutorialCopyWith<$Res> {
       String? imageUrl,
       String? contentEn,
       String? contentRu,
-      DateTime? updatedAt,
       bool publicEn,
       bool publicRu});
 }
@@ -107,7 +103,6 @@ class _$TutorialCopyWithImpl<$Res> implements $TutorialCopyWith<$Res> {
     Object? imageUrl = freezed,
     Object? contentEn = freezed,
     Object? contentRu = freezed,
-    Object? updatedAt = freezed,
     Object? publicEn = null,
     Object? publicRu = null,
   }) {
@@ -140,10 +135,6 @@ class _$TutorialCopyWithImpl<$Res> implements $TutorialCopyWith<$Res> {
           ? _self.contentRu
           : contentRu // ignore: cast_nullable_to_non_nullable
               as String?,
-      updatedAt: freezed == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       publicEn: null == publicEn
           ? _self.publicEn
           : publicEn // ignore: cast_nullable_to_non_nullable
@@ -257,7 +248,6 @@ extension TutorialPatterns on Tutorial {
             String? imageUrl,
             String? contentEn,
             String? contentRu,
-            DateTime? updatedAt,
             bool publicEn,
             bool publicRu)?
         $default, {
@@ -274,7 +264,6 @@ extension TutorialPatterns on Tutorial {
             _that.imageUrl,
             _that.contentEn,
             _that.contentRu,
-            _that.updatedAt,
             _that.publicEn,
             _that.publicRu);
       case _:
@@ -305,7 +294,6 @@ extension TutorialPatterns on Tutorial {
             String? imageUrl,
             String? contentEn,
             String? contentRu,
-            DateTime? updatedAt,
             bool publicEn,
             bool publicRu)
         $default,
@@ -321,7 +309,6 @@ extension TutorialPatterns on Tutorial {
             _that.imageUrl,
             _that.contentEn,
             _that.contentRu,
-            _that.updatedAt,
             _that.publicEn,
             _that.publicRu);
       case _:
@@ -351,7 +338,6 @@ extension TutorialPatterns on Tutorial {
             String? imageUrl,
             String? contentEn,
             String? contentRu,
-            DateTime? updatedAt,
             bool publicEn,
             bool publicRu)?
         $default,
@@ -367,7 +353,6 @@ extension TutorialPatterns on Tutorial {
             _that.imageUrl,
             _that.contentEn,
             _that.contentRu,
-            _that.updatedAt,
             _that.publicEn,
             _that.publicRu);
       case _:
@@ -387,7 +372,6 @@ class _Tutorial implements Tutorial {
       required this.imageUrl,
       required this.contentEn,
       required this.contentRu,
-      required this.updatedAt,
       required this.publicEn,
       required this.publicRu});
   factory _Tutorial.fromJson(Map<String, dynamic> json) =>
@@ -407,8 +391,6 @@ class _Tutorial implements Tutorial {
   final String? contentEn;
   @override
   final String? contentRu;
-  @override
-  final DateTime? updatedAt;
   @override
   final bool publicEn;
   @override
@@ -445,8 +427,6 @@ class _Tutorial implements Tutorial {
                 other.contentEn == contentEn) &&
             (identical(other.contentRu, contentRu) ||
                 other.contentRu == contentRu) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.publicEn, publicEn) ||
                 other.publicEn == publicEn) &&
             (identical(other.publicRu, publicRu) ||
@@ -456,11 +436,11 @@ class _Tutorial implements Tutorial {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, titleEn, titleRu, thumbUrl,
-      imageUrl, contentEn, contentRu, updatedAt, publicEn, publicRu);
+      imageUrl, contentEn, contentRu, publicEn, publicRu);
 
   @override
   String toString() {
-    return 'Tutorial(id: $id, titleEn: $titleEn, titleRu: $titleRu, thumbUrl: $thumbUrl, imageUrl: $imageUrl, contentEn: $contentEn, contentRu: $contentRu, updatedAt: $updatedAt, publicEn: $publicEn, publicRu: $publicRu)';
+    return 'Tutorial(id: $id, titleEn: $titleEn, titleRu: $titleRu, thumbUrl: $thumbUrl, imageUrl: $imageUrl, contentEn: $contentEn, contentRu: $contentRu, publicEn: $publicEn, publicRu: $publicRu)';
   }
 }
 
@@ -479,7 +459,6 @@ abstract mixin class _$TutorialCopyWith<$Res>
       String? imageUrl,
       String? contentEn,
       String? contentRu,
-      DateTime? updatedAt,
       bool publicEn,
       bool publicRu});
 }
@@ -503,7 +482,6 @@ class __$TutorialCopyWithImpl<$Res> implements _$TutorialCopyWith<$Res> {
     Object? imageUrl = freezed,
     Object? contentEn = freezed,
     Object? contentRu = freezed,
-    Object? updatedAt = freezed,
     Object? publicEn = null,
     Object? publicRu = null,
   }) {
@@ -536,10 +514,6 @@ class __$TutorialCopyWithImpl<$Res> implements _$TutorialCopyWith<$Res> {
           ? _self.contentRu
           : contentRu // ignore: cast_nullable_to_non_nullable
               as String?,
-      updatedAt: freezed == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       publicEn: null == publicEn
           ? _self.publicEn
           : publicEn // ignore: cast_nullable_to_non_nullable

@@ -113,11 +113,12 @@ class FirestoreService {
         .delete();
   }
 
-  Future<void> addTutorial(TutorialFirestoreModel tutorial) async {
+  Future<String> addTutorial(TutorialFirestoreModel tutorial) async {
     final tutorialsCount = await _firestore.collection('tutorials').get().then((value) => value.size);
-    await _firestore
+    final ref = await _firestore
         .collection('tutorials')
         .add({...tutorial.toJson(), 'created_at': FieldValue.serverTimestamp(), 'index': tutorialsCount + 1});
+    return ref.id;
   }
 
   Future<void> updateTutorial(TutorialFirestoreModel tutorial) async {

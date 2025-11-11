@@ -50,7 +50,7 @@ final class TutorialViewModelProvider
   }
 }
 
-String _$tutorialViewModelHash() => r'a1424a6f0f34181b1a8cfb3d64b7161e5a1819d7';
+String _$tutorialViewModelHash() => r'f1d1cb218a7e43555eb0b435762e2f31890d3700';
 
 final class TutorialViewModelFamily extends $Family
     with

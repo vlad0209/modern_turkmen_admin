@@ -13,20 +13,19 @@ class TutorialRepositoryFirestore implements TutorialRepository {
   Future<Tutorial> getTutorial(String tutorialId) async {
     final model = await _firestoreService.getTutorial(tutorialId);
     return Tutorial(
-        id: model.id,
+        id: model.id!,
         titleEn: model.titleEn,
         titleRu: model.titleRu,
         thumbUrl: model.thumbUrl,
         imageUrl: model.imageUrl,
         contentEn: model.contentEn,
         contentRu: model.contentRu,
-        updatedAt: model.updatedAt,
         publicEn: model.publicEn,
         publicRu: model.publicRu);
   }
 
   @override
-  Future<void> addTutorial(Map<String, dynamic> data) async {
+  Future<String> addTutorial(Map<String, dynamic> data) async {
     return await _firestoreService.addTutorial(TutorialFirestoreModel.fromJson(data));
   }
 
@@ -40,14 +39,13 @@ class TutorialRepositoryFirestore implements TutorialRepository {
     return _firestoreService.getTutorialsStream().map((models) {
       return models.map((model) {
         return Tutorial(
-            id: model.id,
+            id: model.id!,
             titleEn: model.titleEn,
             titleRu: model.titleRu,
             thumbUrl: model.thumbUrl,
             imageUrl: model.imageUrl,
             contentEn: model.contentEn,
             contentRu: model.contentRu,
-            updatedAt: model.updatedAt,
             publicEn: model.publicEn,
             publicRu: model.publicRu);
       }).toList();

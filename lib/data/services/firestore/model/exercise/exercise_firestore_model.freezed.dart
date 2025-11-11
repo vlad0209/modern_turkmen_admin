@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ExerciseFirestoreModel {
-  String get id;
+  @JsonKey(name: 'id', includeToJson: false)
+  String? get id;
   String get description;
   String get example;
   List<Map<String, dynamic>> get items;
@@ -74,7 +75,7 @@ abstract mixin class $ExerciseFirestoreModelCopyWith<$Res> {
       _$ExerciseFirestoreModelCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'id', includeToJson: false) String? id,
       String description,
       String example,
       List<Map<String, dynamic>> items,
@@ -95,7 +96,7 @@ class _$ExerciseFirestoreModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? description = null,
     Object? example = null,
     Object? items = null,
@@ -103,10 +104,10 @@ class _$ExerciseFirestoreModelCopyWithImpl<$Res>
     Object? exampleTranslation = freezed,
   }) {
     return _then(_self.copyWith(
-      id: null == id
+      id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       description: null == description
           ? _self.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -225,7 +226,7 @@ extension ExerciseFirestoreModelPatterns on ExerciseFirestoreModel {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             String description,
             String example,
             List<Map<String, dynamic>> items,
@@ -260,7 +261,7 @@ extension ExerciseFirestoreModelPatterns on ExerciseFirestoreModel {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             String description,
             String example,
             List<Map<String, dynamic>> items,
@@ -293,7 +294,7 @@ extension ExerciseFirestoreModelPatterns on ExerciseFirestoreModel {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             String description,
             String example,
             List<Map<String, dynamic>> items,
@@ -316,7 +317,7 @@ extension ExerciseFirestoreModelPatterns on ExerciseFirestoreModel {
 @JsonSerializable()
 class _ExerciseFirestoreModel implements ExerciseFirestoreModel {
   const _ExerciseFirestoreModel(
-      {required this.id,
+      {@JsonKey(name: 'id', includeToJson: false) this.id,
       required this.description,
       required this.example,
       required final List<Map<String, dynamic>> items,
@@ -327,7 +328,8 @@ class _ExerciseFirestoreModel implements ExerciseFirestoreModel {
       _$ExerciseFirestoreModelFromJson(json);
 
   @override
-  final String id;
+  @JsonKey(name: 'id', includeToJson: false)
+  final String? id;
   @override
   final String description;
   @override
@@ -405,7 +407,7 @@ abstract mixin class _$ExerciseFirestoreModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'id', includeToJson: false) String? id,
       String description,
       String example,
       List<Map<String, dynamic>> items,
@@ -426,7 +428,7 @@ class __$ExerciseFirestoreModelCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? description = null,
     Object? example = null,
     Object? items = null,
@@ -434,10 +436,10 @@ class __$ExerciseFirestoreModelCopyWithImpl<$Res>
     Object? exampleTranslation = freezed,
   }) {
     return _then(_ExerciseFirestoreModel(
-      id: null == id
+      id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       description: null == description
           ? _self.description
           : description // ignore: cast_nullable_to_non_nullable

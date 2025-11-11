@@ -14,15 +14,12 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$TutorialFirestoreModel {
-  String get id;
+  @JsonKey(name: 'id', includeToJson: false)
+  String? get id;
   @JsonKey(name: 'content_en')
   String get contentEn;
   @JsonKey(name: 'content_ru')
   String get contentRu;
-  @JsonKey(name: 'created_at', fromJson: timeFromJson, includeToJson: false)
-  DateTime? get createdAt;
-  @JsonKey(name: 'updated_at', fromJson: timeFromJson, includeToJson: false)
-  DateTime? get updatedAt;
   @JsonKey(name: 'image_url')
   String get imageUrl;
   @JsonKey(name: 'index', includeToJson: false)
@@ -59,10 +56,6 @@ mixin _$TutorialFirestoreModel {
                 other.contentEn == contentEn) &&
             (identical(other.contentRu, contentRu) ||
                 other.contentRu == contentRu) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.index, index) || other.index == index) &&
@@ -78,24 +71,12 @@ mixin _$TutorialFirestoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      contentEn,
-      contentRu,
-      createdAt,
-      updatedAt,
-      imageUrl,
-      index,
-      publicEn,
-      publicRu,
-      thumbUrl,
-      titleEn,
-      titleRu);
+  int get hashCode => Object.hash(runtimeType, id, contentEn, contentRu,
+      imageUrl, index, publicEn, publicRu, thumbUrl, titleEn, titleRu);
 
   @override
   String toString() {
-    return 'TutorialFirestoreModel(id: $id, contentEn: $contentEn, contentRu: $contentRu, createdAt: $createdAt, updatedAt: $updatedAt, imageUrl: $imageUrl, index: $index, publicEn: $publicEn, publicRu: $publicRu, thumbUrl: $thumbUrl, titleEn: $titleEn, titleRu: $titleRu)';
+    return 'TutorialFirestoreModel(id: $id, contentEn: $contentEn, contentRu: $contentRu, imageUrl: $imageUrl, index: $index, publicEn: $publicEn, publicRu: $publicRu, thumbUrl: $thumbUrl, titleEn: $titleEn, titleRu: $titleRu)';
   }
 }
 
@@ -106,13 +87,9 @@ abstract mixin class $TutorialFirestoreModelCopyWith<$Res> {
       _$TutorialFirestoreModelCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'id', includeToJson: false) String? id,
       @JsonKey(name: 'content_en') String contentEn,
       @JsonKey(name: 'content_ru') String contentRu,
-      @JsonKey(name: 'created_at', fromJson: timeFromJson, includeToJson: false)
-      DateTime? createdAt,
-      @JsonKey(name: 'updated_at', fromJson: timeFromJson, includeToJson: false)
-      DateTime? updatedAt,
       @JsonKey(name: 'image_url') String imageUrl,
       @JsonKey(name: 'index', includeToJson: false) int? index,
       @JsonKey(name: 'public_en') bool publicEn,
@@ -135,11 +112,9 @@ class _$TutorialFirestoreModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? contentEn = null,
     Object? contentRu = null,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
     Object? imageUrl = null,
     Object? index = freezed,
     Object? publicEn = null,
@@ -149,10 +124,10 @@ class _$TutorialFirestoreModelCopyWithImpl<$Res>
     Object? titleRu = null,
   }) {
     return _then(_self.copyWith(
-      id: null == id
+      id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       contentEn: null == contentEn
           ? _self.contentEn
           : contentEn // ignore: cast_nullable_to_non_nullable
@@ -161,14 +136,6 @@ class _$TutorialFirestoreModelCopyWithImpl<$Res>
           ? _self.contentRu
           : contentRu // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: freezed == createdAt
-          ? _self.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      updatedAt: freezed == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       imageUrl: null == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
@@ -295,19 +262,9 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             @JsonKey(name: 'content_en') String contentEn,
             @JsonKey(name: 'content_ru') String contentRu,
-            @JsonKey(
-                name: 'created_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? createdAt,
-            @JsonKey(
-                name: 'updated_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? updatedAt,
             @JsonKey(name: 'image_url') String imageUrl,
             @JsonKey(name: 'index', includeToJson: false) int? index,
             @JsonKey(name: 'public_en') bool publicEn,
@@ -325,8 +282,6 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
             _that.id,
             _that.contentEn,
             _that.contentRu,
-            _that.createdAt,
-            _that.updatedAt,
             _that.imageUrl,
             _that.index,
             _that.publicEn,
@@ -355,19 +310,9 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             @JsonKey(name: 'content_en') String contentEn,
             @JsonKey(name: 'content_ru') String contentRu,
-            @JsonKey(
-                name: 'created_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? createdAt,
-            @JsonKey(
-                name: 'updated_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? updatedAt,
             @JsonKey(name: 'image_url') String imageUrl,
             @JsonKey(name: 'index', includeToJson: false) int? index,
             @JsonKey(name: 'public_en') bool publicEn,
@@ -384,8 +329,6 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
             _that.id,
             _that.contentEn,
             _that.contentRu,
-            _that.createdAt,
-            _that.updatedAt,
             _that.imageUrl,
             _that.index,
             _that.publicEn,
@@ -413,19 +356,9 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            String id,
+            @JsonKey(name: 'id', includeToJson: false) String? id,
             @JsonKey(name: 'content_en') String contentEn,
             @JsonKey(name: 'content_ru') String contentRu,
-            @JsonKey(
-                name: 'created_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? createdAt,
-            @JsonKey(
-                name: 'updated_at',
-                fromJson: timeFromJson,
-                includeToJson: false)
-            DateTime? updatedAt,
             @JsonKey(name: 'image_url') String imageUrl,
             @JsonKey(name: 'index', includeToJson: false) int? index,
             @JsonKey(name: 'public_en') bool publicEn,
@@ -442,8 +375,6 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
             _that.id,
             _that.contentEn,
             _that.contentRu,
-            _that.createdAt,
-            _that.updatedAt,
             _that.imageUrl,
             _that.index,
             _that.publicEn,
@@ -461,13 +392,9 @@ extension TutorialFirestoreModelPatterns on TutorialFirestoreModel {
 @JsonSerializable()
 class _TutorialFirestoreModel implements TutorialFirestoreModel {
   const _TutorialFirestoreModel(
-      {required this.id,
+      {@JsonKey(name: 'id', includeToJson: false) this.id,
       @JsonKey(name: 'content_en') required this.contentEn,
       @JsonKey(name: 'content_ru') required this.contentRu,
-      @JsonKey(name: 'created_at', fromJson: timeFromJson, includeToJson: false)
-      this.createdAt,
-      @JsonKey(name: 'updated_at', fromJson: timeFromJson, includeToJson: false)
-      this.updatedAt,
       @JsonKey(name: 'image_url') required this.imageUrl,
       @JsonKey(name: 'index', includeToJson: false) this.index,
       @JsonKey(name: 'public_en') required this.publicEn,
@@ -479,19 +406,14 @@ class _TutorialFirestoreModel implements TutorialFirestoreModel {
       _$TutorialFirestoreModelFromJson(json);
 
   @override
-  final String id;
+  @JsonKey(name: 'id', includeToJson: false)
+  final String? id;
   @override
   @JsonKey(name: 'content_en')
   final String contentEn;
   @override
   @JsonKey(name: 'content_ru')
   final String contentRu;
-  @override
-  @JsonKey(name: 'created_at', fromJson: timeFromJson, includeToJson: false)
-  final DateTime? createdAt;
-  @override
-  @JsonKey(name: 'updated_at', fromJson: timeFromJson, includeToJson: false)
-  final DateTime? updatedAt;
   @override
   @JsonKey(name: 'image_url')
   final String imageUrl;
@@ -540,10 +462,6 @@ class _TutorialFirestoreModel implements TutorialFirestoreModel {
                 other.contentEn == contentEn) &&
             (identical(other.contentRu, contentRu) ||
                 other.contentRu == contentRu) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
             (identical(other.index, index) || other.index == index) &&
@@ -559,24 +477,12 @@ class _TutorialFirestoreModel implements TutorialFirestoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      contentEn,
-      contentRu,
-      createdAt,
-      updatedAt,
-      imageUrl,
-      index,
-      publicEn,
-      publicRu,
-      thumbUrl,
-      titleEn,
-      titleRu);
+  int get hashCode => Object.hash(runtimeType, id, contentEn, contentRu,
+      imageUrl, index, publicEn, publicRu, thumbUrl, titleEn, titleRu);
 
   @override
   String toString() {
-    return 'TutorialFirestoreModel(id: $id, contentEn: $contentEn, contentRu: $contentRu, createdAt: $createdAt, updatedAt: $updatedAt, imageUrl: $imageUrl, index: $index, publicEn: $publicEn, publicRu: $publicRu, thumbUrl: $thumbUrl, titleEn: $titleEn, titleRu: $titleRu)';
+    return 'TutorialFirestoreModel(id: $id, contentEn: $contentEn, contentRu: $contentRu, imageUrl: $imageUrl, index: $index, publicEn: $publicEn, publicRu: $publicRu, thumbUrl: $thumbUrl, titleEn: $titleEn, titleRu: $titleRu)';
   }
 }
 
@@ -589,13 +495,9 @@ abstract mixin class _$TutorialFirestoreModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {@JsonKey(name: 'id', includeToJson: false) String? id,
       @JsonKey(name: 'content_en') String contentEn,
       @JsonKey(name: 'content_ru') String contentRu,
-      @JsonKey(name: 'created_at', fromJson: timeFromJson, includeToJson: false)
-      DateTime? createdAt,
-      @JsonKey(name: 'updated_at', fromJson: timeFromJson, includeToJson: false)
-      DateTime? updatedAt,
       @JsonKey(name: 'image_url') String imageUrl,
       @JsonKey(name: 'index', includeToJson: false) int? index,
       @JsonKey(name: 'public_en') bool publicEn,
@@ -618,11 +520,9 @@ class __$TutorialFirestoreModelCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? contentEn = null,
     Object? contentRu = null,
-    Object? createdAt = freezed,
-    Object? updatedAt = freezed,
     Object? imageUrl = null,
     Object? index = freezed,
     Object? publicEn = null,
@@ -632,10 +532,10 @@ class __$TutorialFirestoreModelCopyWithImpl<$Res>
     Object? titleRu = null,
   }) {
     return _then(_TutorialFirestoreModel(
-      id: null == id
+      id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       contentEn: null == contentEn
           ? _self.contentEn
           : contentEn // ignore: cast_nullable_to_non_nullable
@@ -644,14 +544,6 @@ class __$TutorialFirestoreModelCopyWithImpl<$Res>
           ? _self.contentRu
           : contentRu // ignore: cast_nullable_to_non_nullable
               as String,
-      createdAt: freezed == createdAt
-          ? _self.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      updatedAt: freezed == updatedAt
-          ? _self.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
       imageUrl: null == imageUrl
           ? _self.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable

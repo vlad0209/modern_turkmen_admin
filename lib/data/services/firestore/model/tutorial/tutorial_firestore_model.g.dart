@@ -9,11 +9,9 @@ part of 'tutorial_firestore_model.dart';
 _TutorialFirestoreModel _$TutorialFirestoreModelFromJson(
         Map<String, dynamic> json) =>
     _TutorialFirestoreModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       contentEn: json['content_en'] as String,
       contentRu: json['content_ru'] as String,
-      createdAt: timeFromJson(json['created_at']),
-      updatedAt: timeFromJson(json['updated_at']),
       imageUrl: json['image_url'] as String,
       index: (json['index'] as num?)?.toInt(),
       publicEn: json['public_en'] as bool,
@@ -26,7 +24,6 @@ _TutorialFirestoreModel _$TutorialFirestoreModelFromJson(
 Map<String, dynamic> _$TutorialFirestoreModelToJson(
         _TutorialFirestoreModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'content_en': instance.contentEn,
       'content_ru': instance.contentRu,
       'image_url': instance.imageUrl,

@@ -21,7 +21,7 @@ class ExerciseRepositoryFirestore implements ExerciseRepository {
       return null;
     }
     return Exercise(
-        id: model.id,
+        id: model.id!,
         items: model.items.map((map) => ExerciseItem.fromJson(map)).toList(),
         description: model.description,
         exampleTranslation: model.exampleTranslation,
@@ -51,7 +51,7 @@ class ExerciseRepositoryFirestore implements ExerciseRepository {
     final models = await _firestoreService.getExercises(tutorialId, languageCode);
     return models.map((model) {
       return Exercise(
-          id: model.id,
+          id: model.id!,
           items: model.items.map((map) => ExerciseItem.fromJson(map)).toList(),
           description: model.description,
           exampleTranslation: model.exampleTranslation,

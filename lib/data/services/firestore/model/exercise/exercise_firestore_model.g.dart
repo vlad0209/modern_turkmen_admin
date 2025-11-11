@@ -9,7 +9,7 @@ part of 'exercise_firestore_model.dart';
 _ExerciseFirestoreModel _$ExerciseFirestoreModelFromJson(
         Map<String, dynamic> json) =>
     _ExerciseFirestoreModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       description: json['description'] as String,
       example: json['example'] as String,
       items: (json['items'] as List<dynamic>)
@@ -22,7 +22,6 @@ _ExerciseFirestoreModel _$ExerciseFirestoreModelFromJson(
 Map<String, dynamic> _$ExerciseFirestoreModelToJson(
         _ExerciseFirestoreModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'description': instance.description,
       'example': instance.example,
       'items': instance.items,

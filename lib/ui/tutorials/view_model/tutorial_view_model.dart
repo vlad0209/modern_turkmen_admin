@@ -15,8 +15,8 @@ class TutorialViewModel extends _$TutorialViewModel {
     return tutorialId == null ? null : await _tutorialRepository.getTutorial(tutorialId);
   }
 
-  Future addTutorial(Map<String, dynamic> data) async {
-    await _tutorialRepository.addTutorial(data);
+  Future<String> addTutorial(Map<String, dynamic> data) async {
+    return await _tutorialRepository.addTutorial(data);
   }
 
   Future updateTutorial(Map<String, dynamic> data) async {

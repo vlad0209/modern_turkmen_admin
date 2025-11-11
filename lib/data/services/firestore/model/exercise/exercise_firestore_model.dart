@@ -6,7 +6,7 @@ part 'exercise_firestore_model.freezed.dart';
 @freezed
 abstract class ExerciseFirestoreModel with _$ExerciseFirestoreModel {
   const factory ExerciseFirestoreModel({
-    required String id,
+    @JsonKey(name: 'id', includeToJson: false) String? id,
     required String description,
     required String example,
     required List<Map<String, dynamic>> items,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:modern_turkmen_admin/domain/models/tutorial/tutorial.dart';
 import 'package:modern_turkmen_admin/ui/core/ui/dropzone.dart';
 
@@ -9,7 +8,7 @@ class TutorialForm extends StatefulWidget {
   final Function onFail;
   final String? id;
   final Tutorial? tutorial;
-  final Future Function(Map<String, dynamic>) addTutorial;
+  final Future<String> Function(Map<String, dynamic>) addTutorial;
   final Future Function(Map<String, dynamic>) updateTutorial;
 
   const TutorialForm(
@@ -33,9 +32,8 @@ class _TutorialFormState extends State<TutorialForm> {
       TextEditingController();
   final TextEditingController _russianContentController = TextEditingController();
 
-  Future<void>? _pendingRequest;
+  Future<dynamic>? _pendingRequest;
   final _formKey = GlobalKey<FormState>();
-  DateTime? updatedAt;
   bool publicEn = false;
   bool publicRu = false;
   String image = '';
@@ -49,7 +47,6 @@ class _TutorialFormState extends State<TutorialForm> {
       _russianNameController.text = widget.tutorial!.titleRu;
       _englishContentController.text = widget.tutorial!.contentEn ?? '';
       _russianContentController.text = widget.tutorial!.contentRu ?? '';
-      updatedAt = widget.tutorial!.updatedAt;
       publicEn = widget.tutorial!.publicEn;
       publicRu = widget.tutorial!.publicRu;
       image = widget.tutorial!.imageUrl ?? '';
@@ -171,11 +168,6 @@ class _TutorialFormState extends State<TutorialForm> {
                         ],
                       ),
                     ),
-                    if (updatedAt != null)
-                      Container(
-                          margin: const EdgeInsets.only(top: 11),
-                          child: Text(
-                              'Updated at: ${DateFormat('yyyy-MM-dd – kk:mm').format(updatedAt!)}')),
                     Container(
                       margin: const EdgeInsets.only(top: 11),
                       child: FutureBuilder(
@@ -228,15 +220,11 @@ class _TutorialFormState extends State<TutorialForm> {
             _pendingRequest = widget.updateTutorial(data);
           });
         }
-        await _pendingRequest;
-        widget.onSuccess(tutorialId);
+        final newTutorialId = await _pendingRequest;
+        widget.onSuccess(newTutorialId ?? tutorialId);
       } on Exception catch (exception) {
         widget.onFail(exception);
       }
-
-      setState(() {
-        updatedAt = data['updated_at'].toDate();
-      });
     }
   }
 }
