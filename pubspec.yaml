@@ -45,11 +45,13 @@ dependencies:
   audioplayers: ^6.0.0
   dotted_border: ^2.1.0
   drop_zone: ^1.0.2
-  html_editor_enhanced:
-    git: https://github.com/carmigo/html-editor-enhanced
   intl: ^0.19.0
   flutter_dropzone: ^4.0.1
   image_picker: ^1.1.2
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +63,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  riverpod_generator: ^3.0.3
+  build_runner: ^2.7.1
+  custom_lint: ^0.8.0
+  riverpod_lint: ^3.0.3
+  freezed: ^3.2.3
+  json_serializable: ^6.11.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
