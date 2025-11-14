@@ -51,8 +51,8 @@ class _DropzoneState extends ConsumerState<Dropzone> {
           radius: const Radius.circular(8),
           dashPattern: const [8, 2],
           child: Container(
-            width: double.infinity,
-            height: 180,
+            width: widget.width ?? double.infinity,
+            height: widget.height ?? 180,
             decoration: BoxDecoration(
               //On hover I want to show light blue color
               color: uiState.isHighlighted
