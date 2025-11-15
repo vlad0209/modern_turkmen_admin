@@ -70,7 +70,7 @@ class DropzoneViewModel extends _$DropzoneViewModel {
     try {
       // Check file type
     final mimeType = lookupMimeType(localFileName);
-
+    print('Detected mime type: $mimeType');
     if (!mime.contains(mimeType)) {
       state = state.copyWith(isUploading: false, isError: true);
     } else {

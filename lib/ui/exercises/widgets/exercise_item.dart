@@ -118,8 +118,8 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
                       width: 200,
                       height: 200,
                       label: 'Sound',
-                      mime: const ['audio/mp3', 'audio/mp4'],
-                      mimeErrorMessage: 'Only audio/mp3 and audio/mp3 allowed',
+                      mime: const ['audio/mp3', 'audio/mpeg'],
+                      mimeErrorMessage: 'Only audio/mp3 and audio/mpeg allowed',
                       onFileUploaded: (String downloadUrl, String? thumbnailUrl) {
                         soundFuture = widget.setSourceUrl(downloadUrl);
                         setState(() {
