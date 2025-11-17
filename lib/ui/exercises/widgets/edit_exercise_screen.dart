@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:modern_turkmen_admin/config/app_constants.dart';
-import 'package:modern_turkmen_admin/ui/exercises/view_model.dart/exercise_view_model.dart';
+import 'package:modern_turkmen_admin/ui/exercises/view_model/exercise_view_model.dart';
 import 'package:modern_turkmen_admin/ui/exercises/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 

@@ -4,7 +4,7 @@ import 'package:modern_turkmen_admin/config/app_constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/ui/main_layout.dart';
-import '../view_model.dart/exercises_list_view_model.dart';
+import '../view_model/exercises_list_view_model.dart';
 
 class ExercisesListScreen extends ConsumerWidget {
   const ExercisesListScreen(

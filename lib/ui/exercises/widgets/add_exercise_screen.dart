@@ -5,7 +5,7 @@ import 'package:modern_turkmen_admin/ui/exercises/widgets/exercise_form.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/ui/main_layout.dart';
-import '../view_model.dart/exercise_view_model.dart';
+import '../view_model/exercise_view_model.dart';
 
 class AddExerciseScreen extends ConsumerWidget {
   const AddExerciseScreen({
