@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -60,8 +61,11 @@ void main() {
       // Only show errors that are NOT layout-related
       if (!isLayoutError) {
         // Use a simple print for non-layout errors to avoid recursion
-        print('Test Error: ${details.exceptionAsString()}');
-        print('Stack trace: ${details.stack}');
+        if (kDebugMode) {
+          print('Test Error: ${details.exceptionAsString()}');
+          print('Stack trace: ${details.stack}');
+        }
+        
       }
       // Silently ignore all layout errors
     };
