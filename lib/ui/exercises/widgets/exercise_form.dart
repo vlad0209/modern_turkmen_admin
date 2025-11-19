@@ -97,119 +97,116 @@ class _ExerciseFormState extends State<ExerciseForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              constraints: const BoxConstraints(maxWidth: 1100),
-              child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      width: 70,
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                            labelText: 'Order number',
-                            border: OutlineInputBorder()),
-                        controller: _orderNumberController,
+            Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    width: 70,
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          labelText: 'Order number',
+                          border: OutlineInputBorder()),
+                      controller: _orderNumberController,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          labelText: 'Description',
+                          border: OutlineInputBorder()),
+                      controller: _descriptionController,
+                      minLines: 8,
+                      maxLines: 11,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          labelText:
+                              'Example (use <f></f> tag to add word tags)',
+                          border: OutlineInputBorder()),
+                      controller: _exampleController,
+                      minLines: 8,
+                      maxLines: 11,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                          labelText: 'Example translation',
+                          border: OutlineInputBorder()),
+                      controller: _exampleTranslationController,
+                      minLines: 8,
+                      maxLines: 11,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    child: const Text(
+                      'Items',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Column(
+                        children: items.cast(),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            labelText: 'Description',
-                            border: OutlineInputBorder()),
-                        controller: _descriptionController,
-                        minLines: 8,
-                        maxLines: 11,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
+                      const SizedBox(
+                        height: 9,
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            labelText:
-                                'Example (use <f></f> tag to add word tags)',
-                            border: OutlineInputBorder()),
-                        controller: _exampleController,
-                        minLines: 8,
-                        maxLines: 11,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
+                      IconButton(
+                        onPressed: addItem,
+                        icon: const Icon(Icons.add),
                       ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                            labelText: 'Example translation',
-                            border: OutlineInputBorder()),
-                        controller: _exampleTranslationController,
-                        minLines: 8,
-                        maxLines: 11,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: const Text(
-                        'Items',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Column(
-                          children: items.cast(),
-                        ),
-                        const SizedBox(
-                          height: 9,
-                        ),
-                        IconButton(
-                          onPressed: addItem,
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 11),
-                      child: FutureBuilder(
-                          future: _pendingRequest,
-                          builder: (context, asyncSnapshot) {
-                            return ElevatedButton(
-                                onPressed: () =>
-                                    asyncSnapshot.connectionState !=
-                                            ConnectionState.waiting
-                                        ? submitForm()
-                                        : null,
-                                child: asyncSnapshot.connectionState ==
-                                        ConnectionState.waiting
-                                    ? const CircularProgressIndicator(
-                                        color: Colors.white,
-                                      )
-                                    : const Text('Save'));
-                          }),
-                    )
-                  ],
-                ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 11),
+                    child: FutureBuilder(
+                        future: _pendingRequest,
+                        builder: (context, asyncSnapshot) {
+                          return ElevatedButton(
+                              onPressed: () =>
+                                  asyncSnapshot.connectionState !=
+                                          ConnectionState.waiting
+                                      ? submitForm()
+                                      : null,
+                              child: asyncSnapshot.connectionState ==
+                                      ConnectionState.waiting
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : const Text('Save'));
+                        }),
+                  )
+                ],
               ),
             ),
           ],
