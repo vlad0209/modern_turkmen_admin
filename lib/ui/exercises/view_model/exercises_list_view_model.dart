@@ -24,7 +24,8 @@ class ExercisesListViewModel extends _$ExercisesListViewModel {
   }
 
   Future<void> deleteExercise(String exerciseId) async {
-    return _exerciseRepository.deleteExercise(
+    await _exerciseRepository.deleteExercise(
         tutorialId, languageCode, exerciseId);
+    ref.invalidateSelf();
   }
 }
