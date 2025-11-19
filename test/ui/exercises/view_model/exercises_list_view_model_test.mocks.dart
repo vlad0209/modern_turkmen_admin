@@ -138,7 +138,7 @@ class MockExerciseRepository extends _i1.Mock
       )) as _i4.FutureOr<_i7.Exercise?>);
 
   @override
-  _i4.Future<void> createExercise(
+  _i4.Future<String> createExercise(
     String? tutorialId,
     String? languageCode,
     Map<String, dynamic>? data,
@@ -152,9 +152,18 @@ class MockExerciseRepository extends _i1.Mock
             data,
           ],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i4.Future<String>.value(_i5.dummyValue<String>(
+          this,
+          Invocation.method(
+            #createExercise,
+            [
+              tutorialId,
+              languageCode,
+              data,
+            ],
+          ),
+        )),
+      ) as _i4.Future<String>);
 
   @override
   _i4.Future<void> updateExercise(

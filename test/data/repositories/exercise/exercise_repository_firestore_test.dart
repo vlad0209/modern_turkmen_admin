@@ -85,7 +85,7 @@ void main() {
         };
         
         when(mockFirestoreService.createExercise(any, any, any))
-            .thenAnswer((_) async {});
+            .thenAnswer((_) async => exerciseId);
 
         await repository.createExercise(tutorialId, languageCode, data);
 

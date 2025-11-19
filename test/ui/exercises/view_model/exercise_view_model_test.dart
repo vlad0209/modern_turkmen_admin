@@ -156,7 +156,7 @@ void main() {
 
       when(mockExerciseRepository.createExercise(
               tutorialId, languageCode, data))
-          .thenAnswer((_) async {});
+          .thenAnswer((_) async => 'created_exercise_id');
 
       final provider =
           exerciseViewModelProvider(tutorialId, languageCode, null);

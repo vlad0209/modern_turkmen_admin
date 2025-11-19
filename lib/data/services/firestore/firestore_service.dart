@@ -80,10 +80,11 @@ class FirestoreService {
     });
   }
 
-  Future<void> createExercise(String tutorialId, String languageCode, ExerciseFirestoreModel exercise,) async {
-    await _firestore
+  Future<String> createExercise(String tutorialId, String languageCode, ExerciseFirestoreModel exercise,) async {
+    final ref = await _firestore
         .collection('tutorials/$tutorialId/exercises_$languageCode')
         .add(exercise.toJson());
+    return ref.id;
   }
 
   Future<void> updateExercise(String tutorialId, String languageCode, ExerciseFirestoreModel exercise) async {

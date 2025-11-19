@@ -47,7 +47,7 @@ class ExerciseViewModel extends _$ExerciseViewModel {
     return _audioRepository.resumeAudio();
   }
 
-  Future<void> createExercise(Map<String, dynamic> data) async {
+  Future<String> createExercise(Map<String, dynamic> data) async {
     return _exerciseRepository.createExercise(
         tutorialId, languageCode, data);
   }

@@ -30,11 +30,16 @@ class ExerciseRepositoryFirestore implements ExerciseRepository {
   }
 
   @override
-  Future<void> createExercise(
+  Future<String> createExercise(
       String tutorialId, String languageCode, Map<String, dynamic> data) async {
   final exercise = ExerciseFirestoreModel.fromJson(data);
-    return await _firestoreService.createExercise(
+    final id = await _firestoreService.createExercise(
         tutorialId, languageCode, exercise);
+    final secondaryLanguageCode =
+        languageCode == 'en' ? 'ru' : 'en';
+    await _firestoreService.createExercise(
+        tutorialId, secondaryLanguageCode, exercise);
+    return id;
   }
 
   @override

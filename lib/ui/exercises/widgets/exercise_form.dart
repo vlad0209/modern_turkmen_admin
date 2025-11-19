@@ -15,7 +15,7 @@ class ExerciseForm extends StatefulWidget {
   final Stream<void> onPlayerStateChanged;
   final Function pauseAudio;
   final Function resumeAudio;
-  final Future<void> Function(Map<String, dynamic>) createExercise;
+  final Future<String> Function(Map<String, dynamic>) createExercise;
   final Future<void> Function(Map<String, dynamic>) updateExercise;
 
   const ExerciseForm(
@@ -44,7 +44,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
   final TextEditingController _exampleTranslationController =
       TextEditingController();
 
-  Future<void>? _pendingRequest;
+  Future<dynamic>? _pendingRequest;
   final _formKey = GlobalKey<FormState>();
   List items = [];
 
@@ -249,10 +249,14 @@ class _ExerciseFormState extends State<ExerciseForm> {
             _pendingRequest = widget.updateExercise(data);
           });
         }
-        await _pendingRequest;
-        if (widget.id != null) {
-          widget.onSuccess(widget.tutorialId, widget.id);
+        String exerciseId;
+        if (widget.action == 'create') {
+          exerciseId = await _pendingRequest as String;
+        } else {
+          exerciseId = widget.id!;
+          await _pendingRequest;
         }
+        widget.onSuccess(widget.tutorialId, exerciseId);
       } on Exception catch (exception) {
         widget.onFail(exception);
       }

@@ -136,7 +136,7 @@ class MockFirestoreService extends _i1.Mock implements _i4.FirestoreService {
       ) as _i5.Future<_i3.TutorialFirestoreModel>);
 
   @override
-  _i5.Future<void> createExercise(
+  _i5.Future<String> createExercise(
     String? tutorialId,
     String? languageCode,
     _i6.ExerciseFirestoreModel? exercise,
@@ -150,9 +150,18 @@ class MockFirestoreService extends _i1.Mock implements _i4.FirestoreService {
             exercise,
           ],
         ),
-        returnValue: _i5.Future<void>.value(),
-        returnValueForMissingStub: _i5.Future<void>.value(),
-      ) as _i5.Future<void>);
+        returnValue: _i5.Future<String>.value(_i7.dummyValue<String>(
+          this,
+          Invocation.method(
+            #createExercise,
+            [
+              tutorialId,
+              languageCode,
+              exercise,
+            ],
+          ),
+        )),
+      ) as _i5.Future<String>);
 
   @override
   _i5.Future<void> updateExercise(

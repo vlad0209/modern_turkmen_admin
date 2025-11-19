@@ -55,7 +55,7 @@ final class ExerciseViewModelProvider
   }
 }
 
-String _$exerciseViewModelHash() => r'd21c28d7b7a64f38efce1b9209f918903999fd80';
+String _$exerciseViewModelHash() => r'c42a24227916b56fe2977a3c5603a982c8aa7381';
 
 final class ExerciseViewModelFamily extends $Family
     with
