@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:modern_turkmen_admin/ui/core/ui/dropzone.dart';
 
@@ -7,7 +9,6 @@ class ExerciseItemController {
   String sentence;
   String solution;
   String translation;
-  
 
   ExerciseItemController(
       {required this.soundUrl,
@@ -52,12 +53,7 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
     if (soundUrl.isNotEmpty) {
       soundFuture = widget.setSourceUrl(soundUrl);
     }
-    widget.onPlayerStateChanged.listen((event) {
-      setState(() {
-        loadingAudio = false;
-        isPlaying = !isPlaying;
-      });
-    });
+
     super.initState();
   }
 
@@ -74,7 +70,9 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
               SizedBox(
                   width: MediaQuery.of(context).size.width / 6,
                   child: TextFormField(
-                    decoration: const InputDecoration(labelText: 'Sentence (use <f/> tag to add word placeholders)'),
+                    decoration: const InputDecoration(
+                        labelText:
+                            'Sentence (use <f/> tag to add word placeholders)'),
                     initialValue: widget.controller.sentence,
                     onChanged: (value) {
                       widget.controller.sentence = value;
@@ -83,9 +81,7 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
               SizedBox(
                   width: MediaQuery.of(context).size.width / 6,
                   child: TextFormField(
-                    decoration: const InputDecoration(
-                        labelText:
-                            'Solution'),
+                    decoration: const InputDecoration(labelText: 'Solution'),
                     initialValue: widget.controller.solution,
                     onChanged: (value) {
                       widget.controller.solution = value;
@@ -120,7 +116,8 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
                       label: 'Sound',
                       mime: const ['audio/mp3', 'audio/mpeg'],
                       mimeErrorMessage: 'Only audio/mp3 and audio/mpeg allowed',
-                      onFileUploaded: (String downloadUrl, String? thumbnailUrl) {
+                      onFileUploaded:
+                          (String downloadUrl, String? thumbnailUrl) {
                         soundFuture = widget.setSourceUrl(downloadUrl);
                         setState(() {
                           soundUrl = downloadUrl;
@@ -135,8 +132,8 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
                             child: CircularProgressIndicator(
                               color: Colors.black,
                             ),
-                          ),
-                        if (isPlaying)
+                          )
+                        else if (isPlaying && soundUrl == widget.controller.soundUrl)
                           IconButton(
                               onPressed: () {
                                 widget.pauseAudio();
@@ -144,8 +141,26 @@ class _ExerciseItemWidgetState extends State<ExerciseItemWidget> {
                               icon: const Icon(Icons.pause))
                         else
                           IconButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                soundFuture = widget.setSourceUrl(soundUrl);
+                                setState(() {
+                                  loadingAudio = true;
+                                });
+                                await soundFuture;
+                                setState(() {
+                                  loadingAudio = false;
+                                });
                                 widget.resumeAudio();
+                                StreamSubscription<void>? subscription;
+                                subscription = widget.onPlayerStateChanged.listen((event) {
+                                  setState(() {
+                                    isPlaying = !isPlaying;
+                                  });
+                                  if(isPlaying == false) {
+                                    subscription?.cancel();
+                                  }
+                                });
+                                
                               },
                               icon: const Icon(Icons.play_arrow)),
                         TextButton(

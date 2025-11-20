@@ -6,16 +6,22 @@ import 'package:flutter/material.dart';
 import '../../core/ui/main_layout.dart';
 import '../view_model/exercises_list_view_model.dart';
 
-class ExercisesListScreen extends ConsumerWidget {
+class ExercisesListScreen extends ConsumerStatefulWidget {
   const ExercisesListScreen(
       {super.key, required this.tutorialId, required this.languageCode});
   final String tutorialId;
   final String languageCode;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ExercisesListScreen> createState() => _ExercisesListScreenState();
+}
+
+class _ExercisesListScreenState extends ConsumerState<ExercisesListScreen> {
+  Future<void>? _pendingDeleteExercise;
+@override
+  Widget build(BuildContext context) {
     final asyncUiState =
-        ref.watch(exercisesListViewModelProvider(tutorialId, languageCode));
+        ref.watch(exercisesListViewModelProvider(widget.tutorialId, widget.languageCode));
 
     return asyncUiState.when(
         loading: () => const Scaffold(
@@ -41,7 +47,7 @@ class ExercisesListScreen extends ConsumerWidget {
                 ),
                 Text(
                   ' > Exercises${tutorialName.isNotEmpty ? ' of $tutorialName' : ''} '
-                  '(${kLanguages[languageCode]})',
+                  '(${kLanguages[widget.languageCode]})',
                 ),
               ],
             ),
@@ -53,7 +59,7 @@ class ExercisesListScreen extends ConsumerWidget {
                       return ListTile(
                         title: TextButton(
                           onPressed: () => context.go(
-                              '/tutorials/$tutorialId/$languageCode/edit-exercise/${exercise.id}'),
+                              '/tutorials/${widget.tutorialId}/${widget.languageCode}/edit-exercise/${exercise.id}'),
                           child: Text(exercise.description ?? 'No description'),
                         ),
                         trailing: IconButton(
@@ -67,7 +73,7 @@ class ExercisesListScreen extends ConsumerWidget {
                     .cast()),
             floatActionButton: FloatingActionButton(
               onPressed: () {
-                context.go('/tutorials/$tutorialId/$languageCode/add-exercise');
+                context.go('/tutorials/${widget.tutorialId}/${widget.languageCode}/add-exercise');
               },
               child: const Icon(Icons.add),
             ),
@@ -86,18 +92,34 @@ class ExercisesListScreen extends ConsumerWidget {
                 TextButton(
                     onPressed: () => Navigator.pop(context, 'Cancel'),
                     child: const Text('Cancel')),
-                TextButton(
-                  onPressed: () {
-                    ref
-                        .read(exercisesListViewModelProvider(
-                                tutorialId, languageCode)
-                            .notifier)
-                        .deleteExercise(exerciseId)
-                        .then((value) => context.mounted
-                            ? Navigator.pop(context, 'OK')
-                            : null);
-                  },
-                  child: const Text('OK'),
+                FutureBuilder(
+                  future: _pendingDeleteExercise,
+                  builder: (context, asyncSnapshot) {
+                    return TextButton(
+                      onPressed: () {
+                        final future = ref
+                            .read(exercisesListViewModelProvider(
+                                    widget.tutorialId, widget.languageCode)
+                                .notifier)
+                            .deleteExercise(exerciseId);
+                        setState(() {
+                          _pendingDeleteExercise = future;
+                        });
+                        future.then((_) {
+                          if (context.mounted) {
+                            Navigator.pop(context, 'OK');
+                          }
+                        });
+                      },
+                      child: asyncSnapshot.connectionState == ConnectionState.waiting
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('OK'),
+                    );
+                  }
                 ),
               ],
             ));
