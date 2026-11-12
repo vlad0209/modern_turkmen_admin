@@ -33,6 +33,18 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js?v=13" async></script>
+  <script>
+    {{flutter_js}}
+    {{flutter_build_config}}
+    _flutter.loader.load({
+      config: {
+        wasmAllowList: {
+          blink: true,
+          webkit: true,
+          gecko: true,
+        },
+      },
+    });
+  </script>
 </body>
 </html>
